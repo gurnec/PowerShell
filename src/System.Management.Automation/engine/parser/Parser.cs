@@ -56,6 +56,27 @@ namespace System.Management.Automation.Language
             _fileName = null;
         }
 
+        internal void Reset()
+        {
+            // Reset / clear private members
+            _parseMode = default(ParseMode);
+            _fileName = null;
+            _savingTokens = false;
+            _ungotToken = null;
+            _inConfiguration = false;
+            _keywordModuleName = null;
+            _previousFirstTokenText = null;
+            _previousLastTokenText = null;
+            _configurationKeywordsDefinedInThisFile.Clear();
+
+            // Reset tokenizer
+            _tokenizer.Initialize();
+
+            // Reset / clear public members
+            ProduceV2Tokens = false;
+            ErrorList.Clear()
+        }
+
         /// <summary>
         /// Parse input from the specified file.
         /// </summary>
@@ -70,7 +91,7 @@ namespace System.Management.Automation.Language
             // If the file has the 'schema.psm1' extension, then it is a 'DSC module file' however we don't actually load the
             // module at parse time so we can't use the normal mechanisms to bind the module name for configuration commands.
             // As an alternative, we extract the base name of the module file and use that as the module name for any keywords exported by this file.
-            var parser = new Parser();
+            var parser = ParserCache.Acquire();
             if (!string.IsNullOrEmpty(fileName) && fileName.Length > scriptSchemaExtension.Length && fileName.EndsWith(scriptSchemaExtension, StringComparison.OrdinalIgnoreCase))
             {
                 parser._keywordModuleName = Path.GetFileName(fileName.Substring(0, fileName.Length - scriptSchemaExtension.Length));
@@ -89,6 +110,7 @@ namespace System.Management.Automation.Language
                 var errorMsg = string.Format(CultureInfo.CurrentCulture, ParserStrings.FileReadError, e.Message);
                 errors = new[] { new ParseError(emptyExtent, "FileReadError", errorMsg) };
                 tokens = Utils.EmptyArray<Token>();
+                ParserCache.Release(parser);
                 return new ScriptBlockAst(emptyExtent, null, new StatementBlockAst(emptyExtent, null, null), false);
             }
 
@@ -109,6 +131,7 @@ namespace System.Management.Automation.Language
             }
             finally
             {
+                ParserCache.Release(parser);
                 if (!parseDscResource)
                 {
                     DynamicKeyword.Pop();
@@ -143,7 +166,7 @@ namespace System.Management.Automation.Language
         /// <returns>The <see cref="ScriptBlockAst"/> that represents the input script file.</returns>
         public static ScriptBlockAst ParseInput(string input, string fileName, out Token[] tokens, out ParseError[] errors)
         {
-            Parser parser = new Parser();
+            Parser parser = ParserCache.Acquire();
             List<Token> tokenList = new List<Token>();
             ScriptBlockAst result;
             try
@@ -153,6 +176,10 @@ namespace System.Management.Automation.Language
             catch (Exception e)
             {
                 throw new ParseException(ParserStrings.UnrecoverableParserError, e);
+            }
+            finally
+            {
+                ParserCache.Release(parser);
             }
 
             tokens = tokenList.ToArray();
@@ -242,13 +269,14 @@ namespace System.Management.Automation.Language
                 return 0;
             }
 
-            var tokenizer = (new Parser())._tokenizer;
+            var parser = ParserCache.Acquire();
+            var tokenizer = parser._tokenizer;
             tokenizer.Initialize(null, str, null);
             tokenizer.AllowSignedNumbers = true;
             var token = tokenizer.NextToken() as NumberToken;
-
             if (token == null || !tokenizer.IsAtEndOfScript(token.Extent))
             {
+                ParserCache.Release(parser);
                 if (shouldTryCoercion)
                 {
                     // We call ConvertTo, primarily because we expect it will throw an exception,
@@ -262,6 +290,7 @@ namespace System.Management.Automation.Language
                 }
             }
 
+            ParserCache.Release(parser);
             return token.Value;
         }
 
@@ -273,7 +302,7 @@ namespace System.Management.Automation.Language
                 return null;
             }
 
-            var parser = new Parser();
+            var parser = ParserCache.Acquire();
             var tokenizer = parser._tokenizer;
             tokenizer.Initialize(null, typename, null);
             Token unused;
@@ -285,22 +314,30 @@ namespace System.Management.Automation.Language
                 result = null;
             }
 
+            ParserCache.Release(parser);
             return result;
         }
 
         internal static ExpressionAst ScanString(string str)
         {
             str = str.Replace("\"", "\"\"");
-            var parser = new Parser();
+            var parser = ParserCache.Acquire();
             parser._tokenizer.Initialize(null, '"' + str + '"', null);
             var strToken = (StringExpandableToken)parser._tokenizer.NextToken();
             var ast = parser.ExpandableStringRule(strToken);
-            if (parser.ErrorList.Count > 0)
+            try
             {
-                throw new ParseException(parser.ErrorList.ToArray());
-            }
+                if (parser.ErrorList.Count > 0)
+                {
+                    throw new ParseException(parser.ErrorList.ToArray());
+                }
 
-            return ast;
+                return ast;
+            }
+            finally
+            {
+                ParserCache.Release(parser);
+            }
         }
 
         private string _previousFirstTokenText;
