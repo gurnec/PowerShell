@@ -25,13 +25,7 @@ namespace System.Management.Automation.Language
 
         internal static void Release(Parser p)
         {
-            if (p.ErrorList.Count > 0)
-            {
-                p.ErrorList.Clear();
-            }
-
-            p._fileName = null;
-            p._ungotToken = null;
+            p.Reset();
             t_cachedInstance = p;
         }
     }
