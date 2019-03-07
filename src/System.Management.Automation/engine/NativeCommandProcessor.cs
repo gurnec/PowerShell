@@ -1025,7 +1025,7 @@ namespace System.Management.Automation
             }
             else if (outputValue.Stream == MinishellStream.Output)
             {
-                this.commandRuntime._WriteObjectSkipAllowCheck(outputValue.Data);
+                this.commandRuntime.WriteObjectSkipAllowCheck(outputValue.Data);
             }
             else if (outputValue.Stream == MinishellStream.Debug)
             {
