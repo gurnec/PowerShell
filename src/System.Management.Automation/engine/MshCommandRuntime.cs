@@ -167,8 +167,8 @@ namespace System.Management.Automation
         /// implementation of ProcessRecord, BeginProcessing or EndProcessing,
         /// and only from that thread.
         /// </exception>
-        /// <seealso cref="System.Management.Automation.ICommandRuntime.WriteObject(object,bool)"/>
-        /// <seealso cref="System.Management.Automation.ICommandRuntime.WriteError(ErrorRecord)"/>
+        /// <seealso cref="System.Management.Automation.ICommandRuntime.WriteObject(object,bool)" />
+        /// <seealso cref="System.Management.Automation.ICommandRuntime.WriteError(ErrorRecord)" />
         public void WriteObject(object sendToPipeline)
         {
             // This check will be repeated in _WriteObjectSkipAllowCheck,
@@ -240,8 +240,8 @@ namespace System.Management.Automation
         /// implementation of ProcessRecord, BeginProcessing or EndProcessing,
         /// and only from that thread.
         /// </exception>
-        /// <seealso cref="System.Management.Automation.ICommandRuntime.WriteObject(object)"/>
-        /// <seealso cref="System.Management.Automation.ICommandRuntime.WriteError(ErrorRecord)"/>
+        /// <seealso cref="System.Management.Automation.ICommandRuntime.WriteObject(object)" />
+        /// <seealso cref="System.Management.Automation.ICommandRuntime.WriteError(ErrorRecord)" />
         public void WriteObject(object sendToPipeline, bool enumerateCollection)
         {
             if (!enumerateCollection)
@@ -328,9 +328,9 @@ namespace System.Management.Automation
         /// be displayed, although this can be configured with the
         /// ProgressPreference shell variable.</para>
         /// </remarks>
-        /// <seealso cref="System.Management.Automation.Cmdlet.WriteDebug(string)"/>
-        /// <seealso cref="System.Management.Automation.Cmdlet.WriteWarning(string)"/>
-        /// <seealso cref="System.Management.Automation.Cmdlet.WriteVerbose(string)"/>
+        /// <seealso cref="System.Management.Automation.Cmdlet.WriteDebug(string)" />
+        /// <seealso cref="System.Management.Automation.Cmdlet.WriteWarning(string)" />
+        /// <seealso cref="System.Management.Automation.Cmdlet.WriteVerbose(string)" />
         public void WriteProgress(ProgressRecord progressRecord)
         {
             this.WriteProgress(progressRecord, false);
@@ -384,9 +384,9 @@ namespace System.Management.Automation
         /// <remarks>
         /// If the pipeline is terminated due to ActionPreference.Stop
         /// or ActionPreference.Inquire, this method will throw
-        /// <see cref="System.Management.Automation.PipelineStoppedException"/>,
+        /// <see cref="System.Management.Automation.PipelineStoppedException" />,
         /// but the command failure will ultimately be
-        /// <see cref="System.Management.Automation.ActionPreferenceStopException"/>,
+        /// <see cref="System.Management.Automation.ActionPreferenceStopException" />,
         /// </remarks>
         public void WriteProgress(long sourceId, ProgressRecord progressRecord)
         {
@@ -397,7 +397,7 @@ namespace System.Management.Automation
         {
             if (progressRecord == null)
             {
-                throw PSTraceSource.NewArgumentNullException("progressRecord");
+                throw PSTraceSource.NewArgumentNullException(nameof(progressRecord));
             }
 
             if (Host?.UI == null)
@@ -452,13 +452,13 @@ namespace System.Management.Automation
         /// <remarks>
         /// If the pipeline is terminated due to ActionPreference.Stop
         /// or ActionPreference.Inquire, this method will throw
-        /// <see cref="System.Management.Automation.PipelineStoppedException"/>,
+        /// <see cref="System.Management.Automation.PipelineStoppedException" />,
         /// but the command failure will ultimately be
-        /// <see cref="System.Management.Automation.ActionPreferenceStopException"/>,
+        /// <see cref="System.Management.Automation.ActionPreferenceStopException" />,
         /// </remarks>
-        /// <seealso cref="System.Management.Automation.Cmdlet.WriteVerbose(string)"/>
-        /// <seealso cref="System.Management.Automation.Cmdlet.WriteWarning(string)"/>
-        /// <seealso cref="System.Management.Automation.Cmdlet.WriteProgress(ProgressRecord)"/>
+        /// <seealso cref="System.Management.Automation.Cmdlet.WriteVerbose(string)" />
+        /// <seealso cref="System.Management.Automation.Cmdlet.WriteWarning(string)" />
+        /// <seealso cref="System.Management.Automation.Cmdlet.WriteProgress(ProgressRecord)" />
         public void WriteDebug(string text)
         {
             WriteDebug(new DebugRecord(text));
@@ -542,9 +542,9 @@ namespace System.Management.Automation
         /// By default, verbose output will not be displayed, although this can be configured with the
         /// $VerbosePreference shell variable or the -Verbose and -Debug command-line options.
         /// </remarks>
-        /// <seealso cref="System.Management.Automation.Cmdlet.WriteDebug(string)"/>
-        /// <seealso cref="System.Management.Automation.Cmdlet.WriteWarning(string)"/>
-        /// <seealso cref="System.Management.Automation.Cmdlet.WriteProgress(ProgressRecord)"/>
+        /// <seealso cref="System.Management.Automation.Cmdlet.WriteDebug(string)" />
+        /// <seealso cref="System.Management.Automation.Cmdlet.WriteWarning(string)" />
+        /// <seealso cref="System.Management.Automation.Cmdlet.WriteProgress(ProgressRecord)" />
         public void WriteVerbose(string text)
         {
             WriteVerbose(new VerboseRecord(text));
@@ -629,9 +629,9 @@ namespace System.Management.Automation
         /// output will be displayed, although this can be configured with the $WarningPreference shell
         /// variable or the -Verbose and -Debug command-line options.
         /// </remarks>
-        /// <seealso cref="System.Management.Automation.Cmdlet.WriteDebug(string)"/>
-        /// <seealso cref="System.Management.Automation.Cmdlet.WriteVerbose(string)"/>
-        /// <seealso cref="System.Management.Automation.Cmdlet.WriteProgress(ProgressRecord)"/>
+        /// <seealso cref="System.Management.Automation.Cmdlet.WriteDebug(string)" />
+        /// <seealso cref="System.Management.Automation.Cmdlet.WriteVerbose(string)" />
+        /// <seealso cref="System.Management.Automation.Cmdlet.WriteProgress(ProgressRecord)" />
         public void WriteWarning(string text)
         {
             WriteWarning(new WarningRecord(text));
@@ -847,9 +847,9 @@ namespace System.Management.Automation
         /// If LogPipelineExecutionDetail is turned on, this information will be written
         /// to monad log under log category "Pipeline execution detail".
         /// </remarks>
-        /// <seealso cref="System.Management.Automation.ICommandRuntime.WriteDebug(string)"/>
-        /// <seealso cref="System.Management.Automation.ICommandRuntime.WriteVerbose(string)"/>
-        /// <seealso cref="System.Management.Automation.ICommandRuntime.WriteProgress(ProgressRecord)"/>
+        /// <seealso cref="System.Management.Automation.ICommandRuntime.WriteDebug(string)" />
+        /// <seealso cref="System.Management.Automation.ICommandRuntime.WriteVerbose(string)" />
+        /// <seealso cref="System.Management.Automation.ICommandRuntime.WriteProgress(ProgressRecord)" />
         public void WriteCommandDetail(string text)
         {
             this.PipelineProcessor.LogExecutionInfo(_thisCommand.MyInvocation, text);
@@ -1026,11 +1026,11 @@ namespace System.Management.Automation
         /// <remarks>
         /// If the pipeline is terminated due to ActionPreference.Stop
         /// or ActionPreference.Inquire,
-        /// <see cref="System.Management.Automation.Cmdlet.ShouldProcess(string)"/>
+        /// <see cref="System.Management.Automation.Cmdlet.ShouldProcess(string)" />
         /// will throw
-        /// <see cref="System.Management.Automation.PipelineStoppedException"/>,
+        /// <see cref="System.Management.Automation.PipelineStoppedException" />,
         /// but the command failure will ultimately be
-        /// <see cref="System.Management.Automation.ActionPreferenceStopException"/>,
+        /// <see cref="System.Management.Automation.ActionPreferenceStopException" />,
         /// </remarks>
         /// <example>
         ///     <snippet Code="C#">
@@ -1058,11 +1058,11 @@ namespace System.Management.Automation
         ///         }
         ///     </snippet>
         /// </example>
-        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldProcess(string,string)"/>
-        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldProcess(string,string,string)"/>
-        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldProcess(string,string,string,out ShouldProcessReason)"/>
-        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldContinue(string,string)"/>
-        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldContinue(string,string,ref bool,ref bool)"/>
+        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldProcess(string,string)" />
+        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldProcess(string,string,string)" />
+        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldProcess(string,string,string,out ShouldProcessReason)" />
+        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldContinue(string,string)" />
+        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldContinue(string,string,ref bool,ref bool)" />
         public bool ShouldProcess(string target)
         {
             string verboseDescription = StringUtil.Format(
@@ -1115,9 +1115,9 @@ namespace System.Management.Automation
         /// <remarks>
         /// If the pipeline is terminated due to ActionPreference.Stop or ActionPreference.Inquire, this
         /// method will throw
-        /// <see cref="System.Management.Automation.PipelineStoppedException"/>,
+        /// <see cref="System.Management.Automation.PipelineStoppedException" />,
         /// but the command failure will ultimately be
-        /// <see cref="System.Management.Automation.ActionPreferenceStopException"/>,
+        /// <see cref="System.Management.Automation.ActionPreferenceStopException" />,
         /// </remarks>
         /// <example>
         ///     <snippet Code="C#">
@@ -1145,11 +1145,11 @@ namespace System.Management.Automation
         ///         }
         ///     </snippet>
         /// </example>
-        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldProcess(string)"/>
-        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldProcess(string,string,string)"/>
-        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldProcess(string,string,string,out ShouldProcessReason)"/>
-        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldContinue(string,string)"/>
-        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldContinue(string,string,ref bool,ref bool)"/>
+        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldProcess(string)" />
+        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldProcess(string,string,string)" />
+        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldProcess(string,string,string,out ShouldProcessReason)" />
+        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldContinue(string,string)" />
+        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldContinue(string,string,ref bool,ref bool)" />
         public bool ShouldProcess(string target, string action)
         {
             string verboseDescription = StringUtil.Format(
@@ -1179,7 +1179,7 @@ namespace System.Management.Automation
         /// <param name="caption">
         /// Caption of the window which may be displayed if the user is prompted whether or not to perform
         /// the action. May be displayed by some hosts, but not all.
-        /// <paramref name="caption"/>
+        /// <paramref name="caption" />
         /// </param>
         /// <exception cref="System.Management.Automation.PipelineStoppedException">
         /// The pipeline has already been terminated, or was terminated during the execution of this method.
@@ -1210,9 +1210,9 @@ namespace System.Management.Automation
         /// <remarks>
         /// If the pipeline is terminated due to ActionPreference.Stop or ActionPreference.Inquire, this
         /// method will throw
-        /// <see cref="System.Management.Automation.PipelineStoppedException"/>,
+        /// <see cref="System.Management.Automation.PipelineStoppedException" />,
         /// but the command failure will ultimately be
-        /// <see cref="System.Management.Automation.ActionPreferenceStopException"/>,
+        /// <see cref="System.Management.Automation.ActionPreferenceStopException" />,
         /// </remarks>
         /// <example>
         ///     <snippet Code="C#">
@@ -1243,11 +1243,11 @@ namespace System.Management.Automation
         ///         }
         ///     </snippet>
         /// </example>
-        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldProcess(string)"/>
-        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldProcess(string,string)"/>
-        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldProcess(string,string,string, out ShouldProcessReason)"/>
-        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldContinue(string,string)"/>
-        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldContinue(string,string,ref bool,ref bool)"/>
+        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldProcess(string)" />
+        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldProcess(string,string)" />
+        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldProcess(string,string,string, out ShouldProcessReason)" />
+        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldContinue(string,string)" />
+        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldContinue(string,string,ref bool,ref bool)" />
         public bool ShouldProcess(string verboseDescription, string verboseWarning, string caption)
             => DoShouldProcess(verboseDescription, verboseWarning, caption, out _);
 
@@ -1270,12 +1270,12 @@ namespace System.Management.Automation
         /// <param name="caption">
         /// Caption of the window which may be displayed if the user is prompted whether or not to perform
         /// the action. May be displayed by some hosts, but not all.
-        /// <paramref name="caption"/>
+        /// <paramref name="caption" />
         /// </param>
         /// <param name="shouldProcessReason">
         /// Indicates the reason(s) why ShouldProcess returned what it returned.
         /// Only the reasons enumerated in
-        /// <see cref="System.Management.Automation.ShouldProcessReason"/>
+        /// <see cref="System.Management.Automation.ShouldProcessReason" />
         /// are returned.
         /// </param>
         /// <exception cref="System.Management.Automation.PipelineStoppedException">
@@ -1307,9 +1307,9 @@ namespace System.Management.Automation
         /// <remarks>
         /// If the pipeline is terminated due to ActionPreference.Stop or ActionPreference.Inquire, this
         /// method will throw
-        /// <see cref="System.Management.Automation.PipelineStoppedException"/>,
+        /// <see cref="System.Management.Automation.PipelineStoppedException" />,
         /// but the command failure will ultimately be
-        /// <see cref="System.Management.Automation.ActionPreferenceStopException"/>,
+        /// <see cref="System.Management.Automation.ActionPreferenceStopException" />,
         /// </remarks>
         /// <example>
         ///     <snippet Code="C#">
@@ -1342,11 +1342,11 @@ namespace System.Management.Automation
         ///         }
         ///     </snippet>
         /// </example>
-        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldProcess(string)"/>
-        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldProcess(string,string)"/>
-        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldProcess(string,string,string)"/>
-        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldContinue(string,string)"/>
-        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldContinue(string,string,ref bool,ref bool)"/>
+        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldProcess(string)" />
+        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldProcess(string,string)" />
+        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldProcess(string,string,string)" />
+        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldContinue(string,string)" />
+        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldContinue(string,string,ref bool,ref bool)" />
         public bool ShouldProcess(
             string verboseDescription,
             string verboseWarning,
@@ -1387,7 +1387,7 @@ namespace System.Management.Automation
         /// <param name="shouldProcessReason">
         /// Indicates the reason(s) why ShouldProcess returned what it returned. Only the reasons
         /// enumerated in
-        /// <see cref="System.Management.Automation.ShouldProcessReason"/>
+        /// <see cref="System.Management.Automation.ShouldProcessReason" />
         /// are returned.
         /// </param>
         /// <remarks>True if and only if the action should be performed.</remarks>
@@ -1399,9 +1399,9 @@ namespace System.Management.Automation
         /// <remarks>
         /// If the pipeline is terminated due to ActionPreference.Stop or ActionPreference.Inquire, this
         /// method will throw
-        /// <see cref="System.Management.Automation.PipelineStoppedException"/>,
+        /// <see cref="System.Management.Automation.PipelineStoppedException" />,
         /// but the command failure will ultimately be
-        /// <see cref="System.Management.Automation.ActionPreferenceStopException"/>,
+        /// <see cref="System.Management.Automation.ActionPreferenceStopException" />,
         /// </remarks>
         private bool DoShouldProcess(
             string verboseDescription,
@@ -1644,10 +1644,10 @@ namespace System.Management.Automation
         ///         }
         ///     </snippet>
         /// </example>
-        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldContinue(string,string,ref bool,ref bool)"/>
-        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldProcess(string)"/>
-        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldProcess(string,string)"/>
-        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldProcess(string,string,string)"/>
+        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldContinue(string,string,ref bool,ref bool)" />
+        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldProcess(string)" />
+        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldProcess(string,string)" />
+        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldProcess(string,string,string)" />
         public bool ShouldContinue(string query, string caption)
         {
             bool yesToAll = false;
@@ -1820,10 +1820,10 @@ namespace System.Management.Automation
         ///         }
         ///     </snippet>
         /// </example>
-        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldContinue(string,string)"/>
-        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldProcess(string)"/>
-        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldProcess(string,string)"/>
-        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldProcess(string,string,string)"/>
+        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldContinue(string,string)" />
+        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldProcess(string)" />
+        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldProcess(string,string)" />
+        /// <seealso cref="System.Management.Automation.Cmdlet.ShouldProcess(string,string,string)" />
         public bool ShouldContinue(string query, string caption, ref bool yesToAll, ref bool noToAll)
             => DoShouldContinue(query, caption, false, true, ref yesToAll, ref noToAll);
 
@@ -1937,33 +1937,33 @@ namespace System.Management.Automation
         /// This method will always throw PipelineStoppedException.
         /// </exception>
         /// <remarks>
-        /// <see cref="System.Management.Automation.Cmdlet.ThrowTerminatingError"/>
+        /// <see cref="System.Management.Automation.Cmdlet.ThrowTerminatingError" />
         /// terminates the command, where
-        /// <see cref="System.Management.Automation.ICommandRuntime.WriteError"/>
+        /// <see cref="System.Management.Automation.ICommandRuntime.WriteError" />
         /// allows the command to continue.
         ///
         /// The cmdlet can also terminate the command by simply throwing any exception. When the cmdlet's
         /// implementation of
-        /// <see cref="System.Management.Automation.Cmdlet.ProcessRecord"/>,
-        /// <see cref="System.Management.Automation.Cmdlet.BeginProcessing"/> or
-        /// <see cref="System.Management.Automation.Cmdlet.EndProcessing"/>
+        /// <see cref="System.Management.Automation.Cmdlet.ProcessRecord" />,
+        /// <see cref="System.Management.Automation.Cmdlet.BeginProcessing" /> or
+        /// <see cref="System.Management.Automation.Cmdlet.EndProcessing" />
         /// throws an exception, the Engine will always catch the exception and report it as a terminating
         /// error. However, it is preferred for the cmdlet to call
-        /// <see cref="System.Management.Automation.Cmdlet.ThrowTerminatingError"/>,
-        /// so that the additional information in <see cref="System.Management.Automation.ErrorRecord"/>
+        /// <see cref="System.Management.Automation.Cmdlet.ThrowTerminatingError" />,
+        /// so that the additional information in <see cref="System.Management.Automation.ErrorRecord" />
         /// is available.
-        /// <see cref="System.Management.Automation.Cmdlet.ThrowTerminatingError"/> always throws
-        /// <see cref="System.Management.Automation.PipelineStoppedException"/>,
-        /// regardless of what error was specified in <paramref name="errorRecord"/>.
-        /// The Cmdlet should generally just allow <see cref="System.Management.Automation.PipelineStoppedException"/>.
-        /// to propagate up to the caller of <see cref="System.Management.Automation.Cmdlet.ProcessRecord"/>, etc.
+        /// <see cref="System.Management.Automation.Cmdlet.ThrowTerminatingError" /> always throws
+        /// <see cref="System.Management.Automation.PipelineStoppedException" />,
+        /// regardless of what error was specified in <paramref name="errorRecord" />.
+        /// The Cmdlet should generally just allow <see cref="System.Management.Automation.PipelineStoppedException" />.
+        /// to propagate up to the caller of <see cref="System.Management.Automation.Cmdlet.ProcessRecord" />, etc.
         /// </remarks>
         public void ThrowTerminatingError(ErrorRecord errorRecord)
         {
             ThrowIfStopping();
             if (errorRecord == null)
             {
-                throw PSTraceSource.NewArgumentNullException("errorRecord");
+                throw PSTraceSource.NewArgumentNullException(nameof(errorRecord));
             }
 
             errorRecord.SetInvocationInfo(MyInvocation);
@@ -2164,6 +2164,7 @@ namespace System.Management.Automation
         #endregion
 
         #region Internal helpers
+
         /// <summary>
         /// Throws if the pipeline is stopping.
         /// </summary>
@@ -2214,20 +2215,30 @@ namespace System.Management.Automation
             internal AllowWrite(InternalCommand permittedToWrite, bool permittedToWriteToPipeline)
             {
                 if (permittedToWrite == null)
-                    throw PSTraceSource.NewArgumentNullException("permittedToWrite");
+                {
+                    throw PSTraceSource.NewArgumentNullException(nameof(permittedToWrite));
+                }
+
                 MshCommandRuntime mcr = permittedToWrite.commandRuntime as MshCommandRuntime;
                 if (mcr == null)
-                    throw PSTraceSource.NewArgumentNullException("permittedToWrite.CommandRuntime");
-                _pp = mcr.PipelineProcessor;
-                if (_pp == null)
-                    throw PSTraceSource.NewArgumentNullException("permittedToWrite.CommandRuntime.PipelineProcessor");
-                _wasPermittedToWrite = _pp._permittedToWrite;
-                _wasPermittedToWriteToPipeline = _pp._permittedToWriteToPipeline;
-                _wasPermittedToWriteThread = _pp._permittedToWriteThread;
-                _pp._permittedToWrite = permittedToWrite;
-                _pp._permittedToWriteToPipeline = permittedToWriteToPipeline;
-                _pp._permittedToWriteThread = Thread.CurrentThread;
+                {
+                    throw PSTraceSource.NewArgumentNullException(nameof(permittedToWrite.commandRuntime));
+                }
+
+                _pipelineProcessor = mcr.PipelineProcessor;
+                if (_pipelineProcessor == null)
+                {
+                    throw PSTraceSource.NewArgumentNullException(nameof(MshCommandRuntime.PipelineProcessor));
+                }
+
+                _wasPermittedToWrite = _pipelineProcessor._permittedToWrite;
+                _wasPermittedToWriteToPipeline = _pipelineProcessor._permittedToWriteToPipeline;
+                _wasPermittedToWriteThread = _pipelineProcessor._permittedToWriteThread;
+                _pipelineProcessor._permittedToWrite = permittedToWrite;
+                _pipelineProcessor._permittedToWriteToPipeline = permittedToWriteToPipeline;
+                _pipelineProcessor._permittedToWriteThread = Thread.CurrentThread;
             }
+
             /// <summary>
             /// End the scope where WriteObject/WriteError is permitted.
             /// </summary>
@@ -2237,34 +2248,34 @@ namespace System.Management.Automation
             /// -->
             public void Dispose()
             {
-                _pp._permittedToWrite = _wasPermittedToWrite;
-                _pp._permittedToWriteToPipeline = _wasPermittedToWriteToPipeline;
-                _pp._permittedToWriteThread = _wasPermittedToWriteThread;
+                _pipelineProcessor._permittedToWrite = _wasPermittedToWrite;
+                _pipelineProcessor._permittedToWriteToPipeline = _wasPermittedToWriteToPipeline;
+                _pipelineProcessor._permittedToWriteThread = _wasPermittedToWriteThread;
                 GC.SuppressFinalize(this);
             }
 
             // There is no finalizer, by design.  This class relies on always
             // being disposed and always following stack semantics.
 
-            private PipelineProcessor _pp = null;
-            private InternalCommand _wasPermittedToWrite = null;
-            private bool _wasPermittedToWriteToPipeline = false;
-            private Thread _wasPermittedToWriteThread = null;
+            private PipelineProcessor _pipelineProcessor;
+            private InternalCommand _wasPermittedToWrite;
+            private bool _wasPermittedToWriteToPipeline;
+            private Thread _wasPermittedToWriteThread;
         }
 
         /// <summary>
-        /// Stores the exception to be returned from
-        /// PipelineProcessor.SynchronousExecute,
-        /// and writes it to the error variable.
-        /// The general pattern is to call
-        /// throw ManageException(e);
+        /// Stores the exception to be returned from PipelineProcessor.SynchronousExecute, and writes it to
+        /// the error variable.
+        /// The general pattern is to call throw ManageException(e);
         /// </summary>
         /// <param name="e">The exception.</param>
         /// <returns>PipelineStoppedException.</returns>
         public Exception ManageException(Exception e)
         {
             if (e == null)
-                throw PSTraceSource.NewArgumentNullException("e");
+            {
+                throw PSTraceSource.NewArgumentNullException(nameof(e));
+            }
 
             if (PipelineProcessor != null)
             {
@@ -2277,7 +2288,7 @@ namespace System.Management.Automation
             // 913088-2005/06/06
             // PipelineStoppedException should not get added to $Error
             // 2008/06/25 - narrieta: ExistNestedPromptException should not be added to $error either
-            if (!(e is HaltCommandException) && !(e is PipelineStoppedException) && !(e is ExitNestedPromptException))
+            if (!(e is HaltCommandException || e is PipelineStoppedException || e is ExitNestedPromptException))
             {
                 try
                 {
@@ -2289,11 +2300,7 @@ namespace System.Management.Automation
                 }
 
                 // Log a command health event
-
-                MshLog.LogCommandHealthEvent(
-                    Context,
-                    e,
-                    Severity.Warning);
+                MshLog.LogCommandHealthEvent(Context, e, Severity.Warning);
             }
 
             // Upstream Cmdlets see only that execution stopped
@@ -2303,10 +2310,12 @@ namespace System.Management.Automation
         #endregion Internal helpers
 
         #region Error PSVariable
+
         private IList _errorVarList;
 
         /// <summary>
-        /// ErrorVariable tells which variable to populate with the errors.
+        /// Gets or sets the string name of the PSVariable to populate with errors.
+        ///
         /// Use +varname to append to the variable rather than clearing it.
         /// </summary>
         /// <remarks>
@@ -2321,11 +2330,14 @@ namespace System.Management.Automation
 
         private void EnsureVariableParameterAllowed()
         {
-            if ((Context.LanguageMode == PSLanguageMode.NoLanguage) ||
-                (Context.LanguageMode == PSLanguageMode.RestrictedLanguage))
+            if (Context.LanguageMode == PSLanguageMode.NoLanguage
+                || Context.LanguageMode == PSLanguageMode.RestrictedLanguage)
             {
-                throw InterpreterError.NewInterpreterException(null, typeof(RuntimeException),
-                    null, "VariableReferenceNotSupportedInDataSection",
+                throw InterpreterError.NewInterpreterException(
+                    targetObject: null,
+                    typeof(RuntimeException),
+                    errorPosition: null,
+                    "VariableReferenceNotSupportedInDataSection",
                     ParserStrings.VariableReferenceNotSupportedInDataSection,
                     ParserStrings.DefaultAllowedVariablesInDataSection);
             }
@@ -2336,12 +2348,14 @@ namespace System.Management.Automation
         /// </summary>
         /// <param name="obj">Exception or ErrorRecord.</param>
         /// <exception cref="System.Management.Automation.ExtendedTypeSystemException">
-        /// (An error occurred working with the error variable or $ERROR.
+        /// An error occurred working with the error variable or $ERROR.
         /// </exception>
         internal void AppendErrorToVariables(object obj)
         {
             if (obj == null)
+            {
                 return;
+            }
 
             AppendDollarError(obj);
 
@@ -2349,24 +2363,23 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Appends the object to $global:error.  Non-terminating errors
-        /// are always added (even if they are redirected to another
-        /// Cmdlet), but terminating errors are only added if they are
-        /// at the top-level scope (the LocalPipeline scope).
+        /// Appends the object to $global:error. Non-terminating errors are always added (even if they are
+        /// redirected to another Cmdlet), but terminating errors are only added if they are at the top-level
+        /// scope (the LocalPipeline scope).
+        ///
         /// We insert at position 0 and delete from position 63.
         /// </summary>
         /// <param name="obj">
-        /// ErrorRecord or Exception to be written to $global:error
+        /// ErrorRecord or Exception to be written to $global:error.
         /// </param>
         /// <exception cref="System.Management.Automation.ExtendedTypeSystemException">
         /// An error occurred accessing $ERROR.
         /// </exception>
         private void AppendDollarError(object obj)
         {
-            if (obj is Exception)
+            if (obj is Exception && (this.PipelineProcessor == null || !this.PipelineProcessor.TopLevel))
             {
-                if (this.PipelineProcessor == null || !this.PipelineProcessor.TopLevel)
-                    return; // not outermost scope
+                return; // not outermost scope
             }
 
             Context.AppendDollarError(obj);
@@ -2375,10 +2388,12 @@ namespace System.Management.Automation
         #endregion Error PSVariable
 
         #region Warning PSVariable
+
         private IList _warningVarList;
 
         /// <summary>
-        /// WarningVariable tells which variable to populate with the warnings.
+        /// Gets or sets the string name of the PSVariable to be populated with warnings.
+        ///
         /// Use +varname to append to the variable rather than clearing it.
         /// </summary>
         /// <remarks>
@@ -2403,10 +2418,12 @@ namespace System.Management.Automation
         #endregion Warning PSVariable
 
         #region Information PSVariable
+
         private IList _informationVarList;
 
         /// <summary>
-        /// InformationVariable tells which variable to populate with informational output.
+        /// Gets or sets the string name of the PSVariable to populate with informational records.
+        ///
         /// Use +varname to append to the variable rather than clearing it.
         /// </summary>
         /// <remarks>
@@ -2429,13 +2446,16 @@ namespace System.Management.Automation
             EnsureVariableParameterAllowed();
 
             if (_state == null)
+            {
                 _state = new SessionState(Context.EngineSessionState);
+            }
 
             if (variableName.StartsWith("+", StringComparison.Ordinal))
             {
                 variableName = variableName.Substring(1);
                 object oldValue = PSObject.Base(_state.PSVariable.GetValue(variableName));
                 varList = oldValue as IList;
+
                 if (varList == null)
                 {
                     varList = new ArrayList();
@@ -2477,9 +2497,9 @@ namespace System.Management.Automation
         }
 
         /// <summary>
-        /// Append a Information to InformationVariable if specified.
+        /// Append an InformationRecord to InformationVariable if specified.
         /// </summary>
-        /// <param name="obj">The Information message.</param>
+        /// <param name="obj">The InformationRecord to add.</param>
         internal void AppendInformationVarList(object obj)
         {
             this.OutputPipe.AppendVariableList(VariableStreamKind.Information, obj);
@@ -2488,25 +2508,26 @@ namespace System.Management.Automation
         #endregion Information PSVariable
 
         #region Write
+
         internal bool UseSecurityContextRun = true;
 
         // NOTICE-2004/06/08-JonN 959638
         // Use this variant to skip the ThrowIfWriteNotPermitted check
         /// <exception cref="System.Management.Automation.PipelineStoppedException">
-        /// The pipeline has already been terminated, or was terminated
-        /// during the execution of this method.
-        /// The Cmdlet should generally just allow PipelineStoppedException
-        /// to propagate up to the caller of ProcessRecord etc.
+        /// The pipeline has already been terminated, or was terminated during the execution of this method.
+        /// The Cmdlet should generally just allow PipelineStoppedException to propagate up to the caller
+        /// of ProcessRecord etc.
         /// </exception>
         internal void WriteObjectSkipAllowCheck(object sendToPipeline)
         {
             ThrowIfStopping();
 
             if (AutomationNull.Value == sendToPipeline)
+            {
                 return;
+            }
 
             sendToPipeline = LanguagePrimitives.AsPSObjectOrNull(sendToPipeline);
-
             this.OutputPipe.Add(sendToPipeline);
         }
 
@@ -2533,7 +2554,9 @@ namespace System.Management.Automation
             foreach (object toConvert in enumerable)
             {
                 if (AutomationNull.Value == toConvert)
+                {
                     continue;
+                }
 
                 object converted = LanguagePrimitives.AsPSObjectOrNull(toConvert);
                 convertedList.Add(converted);
@@ -2547,38 +2570,36 @@ namespace System.Management.Automation
         #endregion Write
 
         #region WriteError
+
         /// <summary>
         /// Internal variant: Writes the specified error to the error pipe.
         /// </summary>
         /// <remarks>
-        /// Do not call WriteError(e.ErrorRecord).
-        /// The ErrorRecord contained in the ErrorRecord property of
-        /// an exception which implements IContainsErrorRecord
-        /// should not be passed directly to WriteError, since it contains
-        /// a <see cref="System.Management.Automation.ParentContainsErrorRecordException"/>
+        /// Do not call WriteError(e.ErrorRecord). The ErrorRecord contained in the ErrorRecord property of
+        /// an exception which implements IContainsErrorRecord should not be passed directly to WriteError,
+        /// since it contains a <see cref="System.Management.Automation.ParentContainsErrorRecordException" />
         /// rather than the real exception.
         /// </remarks>
-        /// <param name="errorRecord">Error.</param>
+        /// <param name="errorRecord">Error record to write.</param>
         /// <exception cref="System.InvalidOperationException">
-        /// Not permitted at this time or from this thread
+        /// Not permitted at this time or from this thread.
         /// </exception>
         /// <exception cref="System.Management.Automation.PipelineStoppedException">
-        /// The pipeline has already been terminated, or was terminated
-        /// during the execution of this method.
-        /// The Cmdlet should generally just allow PipelineStoppedException
-        /// to propagate up to the caller of ProcessRecord etc.
+        /// The pipeline has already been terminated, or was terminated during the execution of this method.
+        /// The Cmdlet should generally just allow PipelineStoppedException to propagate up to the caller
+        /// of ProcessRecord etc.
         /// </exception>
         /// <remarks>
-        /// <see cref="System.Management.Automation.Cmdlet.ThrowTerminatingError"/>
+        /// <see cref="System.Management.Automation.Cmdlet.ThrowTerminatingError" />
         /// terminates the command, where
-        /// <see cref="System.Management.Automation.ICommandRuntime.WriteError"/>
+        /// <see cref="System.Management.Automation.ICommandRuntime.WriteError" />
         /// allows the command to continue.
         ///
-        /// If the pipeline is terminated due to ActionPreference.Stop
-        /// or ActionPreference.Inquire, this method will throw
-        /// <see cref="System.Management.Automation.PipelineStoppedException"/>,
+        /// If the pipeline is terminated due to ActionPreference.Stop or ActionPreference.Inquire, this
+        /// method will throw
+        /// <see cref="System.Management.Automation.PipelineStoppedException" />,
         /// but the command failure will ultimately be
-        /// <see cref="System.Management.Automation.ActionPreferenceStopException"/>,
+        /// <see cref="System.Management.Automation.ActionPreferenceStopException" />.
         /// </remarks>
         public void WriteError(ErrorRecord errorRecord)
         {
@@ -2587,10 +2608,8 @@ namespace System.Management.Automation
 
         internal void WriteError(ErrorRecord errorRecord, bool overrideInquire)
         {
-            // This check will be repeated in _WriteErrorSkipAllowCheck,
-            // but we want PipelineStoppedException to take precedence
-            // over InvalidOperationException if the pipeline has been
-            // closed.
+            // This check will be repeated in _WriteErrorSkipAllowCheck, but we want PipelineStoppedException
+            // to take precedence over InvalidOperationException if the pipeline has been closed.
             ThrowIfStopping();
 
             ActionPreference preference = ErrorAction;
@@ -2605,10 +2624,12 @@ namespace System.Management.Automation
 #else
             if (UseSecurityContextRun)
             {
-                if (PipelineProcessor == null || PipelineProcessor.SecurityContext == null)
+                if (PipelineProcessor?.SecurityContext == null)
+                {
                     throw PSTraceSource.NewInvalidOperationException(PipelineStrings.WriteNotPermitted);
-                ContextCallback delegateCallback =
-                    new ContextCallback(DoWriteError);
+                }
+
+                ContextCallback delegateCallback = new ContextCallback(DoWriteError);
 
                 SecurityContext.Run(
                     PipelineProcessor.SecurityContext.CreateCopy(),
@@ -2623,20 +2644,19 @@ namespace System.Management.Automation
         }
 
         /// <exception cref="System.InvalidOperationException">
-        /// Not permitted at this time or from this thread
+        /// Not permitted at this time or from this thread.
         /// </exception>
         /// <exception cref="System.Management.Automation.PipelineStoppedException">
-        /// The pipeline has already been terminated, or was terminated
-        /// during the execution of this method.
-        /// The Cmdlet should generally just allow PipelineStoppedException
-        /// to propagate up to the caller of ProcessRecord etc.
+        /// The pipeline has already been terminated, or was terminated during the execution of this method.
+        /// The Cmdlet should generally just allow PipelineStoppedException to propagate up to the caller
+        /// of ProcessRecord, etc.
         /// </exception>
         /// <remarks>
-        /// If the pipeline is terminated due to ActionPreference.Stop
-        /// or ActionPreference.Inquire, this method will throw
-        /// <see cref="System.Management.Automation.PipelineStoppedException"/>,
+        /// If the pipeline is terminated due to ActionPreference.Stop or ActionPreference.Inquire, this
+        /// method will throw
+        /// <see cref="System.Management.Automation.PipelineStoppedException" />,
         /// but the command failure will ultimately be
-        /// <see cref="System.Management.Automation.ActionPreferenceStopException"/>,
+        /// <see cref="System.Management.Automation.ActionPreferenceStopException" />.
         /// </remarks>
         private void DoWriteError(object obj)
         {
@@ -2645,16 +2665,14 @@ namespace System.Management.Automation
             ActionPreference preference = pair.Value;
             if (errorRecord == null)
             {
-                throw PSTraceSource.NewArgumentNullException("errorRecord");
+                throw PSTraceSource.NewArgumentNullException(nameof(errorRecord));
             }
 
-            // If this error came from a transacted cmdlet,
-            // rollback the transaction
+            // If this error came from a transacted cmdlet, rollback the transaction
             if (UseTransaction)
             {
-                if (
-                   (Context.TransactionManager.RollbackPreference != RollbackSeverity.TerminatingError) &&
-                   (Context.TransactionManager.RollbackPreference != RollbackSeverity.Never))
+                if (Context.TransactionManager.RollbackPreference != RollbackSeverity.TerminatingError
+                    && Context.TransactionManager.RollbackPreference != RollbackSeverity.Never)
                 {
                     Context.TransactionManager.Rollback(true);
                 }
@@ -2663,37 +2681,39 @@ namespace System.Management.Automation
             // 2005/07/14-913791 "write-error output is confusing and misleading"
             // set InvocationInfo to the script not the command
             if (errorRecord.PreserveInvocationInfoOnce)
+            {
                 errorRecord.PreserveInvocationInfoOnce = false;
+            }
             else
+            {
                 errorRecord.SetInvocationInfo(MyInvocation);
+            }
 
             // NOTICE-2004/06/08-JonN 959638
             ThrowIfWriteNotPermitted(true);
 
-            _WriteErrorSkipAllowCheck(errorRecord, preference);
+            WriteErrorSkipAllowCheck(errorRecord, preference);
         }
 
         // NOTICE-2004/06/08-JonN 959638
-        // Use this variant to skip the ThrowIfWriteNotPermitted check
+        // Use this variant to skip the ThrowIfWriteNotPermitted check.
         /// <exception cref="System.Management.Automation.PipelineStoppedException">
-        /// The pipeline has already been terminated, or was terminated
-        /// during the execution of this method.
-        /// The Cmdlet should generally just allow PipelineStoppedException
-        /// to propagate up to the caller of ProcessRecord etc.
+        /// The pipeline has already been terminated, or was terminated during the execution of this method.
+        /// The Cmdlet should generally just allow PipelineStoppedException to propagate up to the caller
+        /// of ProcessRecord etc.
         /// </exception>
         /// <remarks>
-        /// If the pipeline is terminated due to ActionPreference.Stop
-        /// or ActionPreference.Inquire, this method will throw
-        /// <see cref="System.Management.Automation.PipelineStoppedException"/>,
+        /// If the pipeline is terminated due to ActionPreference.Stop or ActionPreference.Inquire, this
+        /// method will throw
+        /// <see cref="System.Management.Automation.PipelineStoppedException" />,
         /// but the command failure will ultimately be
-        /// <see cref="System.Management.Automation.ActionPreferenceStopException"/>,
+        /// <see cref="System.Management.Automation.ActionPreferenceStopException" />.
         /// </remarks>
-        internal void _WriteErrorSkipAllowCheck(ErrorRecord errorRecord, ActionPreference? actionPreference = null, bool isNativeError = false)
+        internal void WriteErrorSkipAllowCheck(ErrorRecord errorRecord, ActionPreference? actionPreference = null, bool isNativeError = false)
         {
             ThrowIfStopping();
 
-            if (errorRecord.ErrorDetails != null
-                && errorRecord.ErrorDetails.TextLookupError != null)
+            if (errorRecord.ErrorDetails?.TextLookupError != null)
             {
                 Exception textLookupError = errorRecord.ErrorDetails.TextLookupError;
                 errorRecord.ErrorDetails.TextLookupError = null;
@@ -2737,37 +2757,36 @@ namespace System.Management.Automation
             switch (preference)
             {
                 case ActionPreference.Stop:
-                    ActionPreferenceStopException e =
-                        new ActionPreferenceStopException(
-                            MyInvocation,
-                            errorRecord,
-                            StringUtil.Format(CommandBaseStrings.ErrorPreferenceStop,
-                                              "ErrorActionPreference",
-                                              errorRecord.ToString()));
+                    ActionPreferenceStopException e = new ActionPreferenceStopException(
+                        MyInvocation,
+                        errorRecord,
+                        StringUtil.Format(
+                            CommandBaseStrings.ErrorPreferenceStop,
+                            "ErrorActionPreference",
+                            errorRecord.ToString()));
                     throw ManageException(e);
 
                 case ActionPreference.Inquire:
-                    // ignore return value
-                    // this will throw if the user chooses not to continue
+                    // Ignore return value.
+                    // This will throw if the user chooses not to continue.
                     lastErrorContinueStatus = InquireHelper(
                         RuntimeException.RetrieveMessage(errorRecord),
-                        null,
-                        true,  // allowYesToAll
-                        false, // allowNoToAll
-                        true,  // replaceNoWithHalt
-                        false  // hasSecurityImpact
+                        inquireCaption: null,
+                        allowYesToAll: true,
+                        allowNoToAll: false,
+                        replaceNoWithHalt: true,
+                        hasSecurityImpact: false
                     );
                     break;
             }
 
-            // 2005/01/20 Do not write the object to $error if
-            // ManageException has already done so
+            // 2005/01/20 Do not write the object to $error if ManageException has already done so
             AppendErrorToVariables(errorRecord);
 
-            // Add this note property and set its value to true for F&O
-            // to decide whether to call WriteErrorLine or WriteLine.
-            // We want errors to print in red in both cases.
+            // Add this note property and set its value to true for F&O to decide whether to call
+            // WriteErrorLine or WriteLine. We want errors to print in red in both cases.
             PSObject errorWrap = PSObject.AsPSObject(errorRecord);
+
             // It's possible we've already added the member (this method is recursive sometimes
             // when tracing), so don't add the member again.
 
@@ -2778,8 +2797,8 @@ namespace System.Management.Automation
                 errorWrap.Properties.Add(note);
             }
 
-            // 2003/11/19-JonN Previously, PSObject instances in ErrorOutputPipe
-            // wrapped the TargetObject and held the CoreException as a note.
+            // 2003/11/19-JonN Previously, PSObject instances in ErrorOutputPipe wrapped the
+            // TargetObject and held the CoreException as a note.
             // Now, they wrap the CoreException and hold the TargetObject as a note.
             if (ErrorMergeTo != MergeDataStream.None)
             {
@@ -2788,8 +2807,8 @@ namespace System.Management.Automation
             }
             else
             {
-                // If this is an error pipe for a hosting application and we are logging,
-                // then create a temporary PowerShell to log the error.
+                // If this is an error pipe for a hosting application and we are logging, then create a
+                //temporary PowerShell instance to log the error.
                 if (Context.InternalHost.UI.IsTranscribing)
                 {
                     Context.InternalHost.UI.TranscribeError(Context, errorRecord.InvocationInfo, errorWrap);
@@ -2802,19 +2821,18 @@ namespace System.Management.Automation
 
         #region Preference
 
-        // These are a set of preference variables which affect the inner
-        // workings of the command and when what information will get output.
+        // These are a set of preference variables which affect the inner workings of the command and when
+        // what information will get output.
         // See "User Feedback Mechanisms - Note.doc" for details.
-
         private bool _isConfirmPreferenceCached = false;
+
         private ConfirmImpact _confirmPreference = InitialSessionState.defaultConfirmPreference;
         /// <summary>
-        /// Preference setting controlling behavior of ShouldProcess()
+        /// Gets or sets the $ConfirmPreference setting controlling behavior of ShouldProcess().
         /// </summary>
         /// <remarks>
-        /// This is not an independent parameter, it just emerges from the
-        /// Verbose, Debug, Confirm, and WhatIf parameters and the
-        /// $ConfirmPreference shell variable.
+        /// This is not an independent parameter, it just emerges from the Verbose, Debug, Confirm, and
+        /// WhatIf parameters and the $ConfirmPreference shell variable.
         ///
         /// We only read $ConfirmPreference once, then cache the value.
         /// </remarks>
@@ -2824,21 +2842,25 @@ namespace System.Management.Automation
             {
                 // WhatIf not relevant, it never gets this far in that case
                 if (Confirm)
-                    return ConfirmImpact.Low;
-                if (Debug)
                 {
-                    if (IsConfirmFlagSet) // -Debug -Confirm:$false
-                        return ConfirmImpact.None;
                     return ConfirmImpact.Low;
                 }
 
+                if (Debug)
+                {
+                    // -Debug -Confirm:$false
+                    return IsConfirmFlagSet ? ConfirmImpact.None : ConfirmImpact.Low;
+                }
+
                 if (IsConfirmFlagSet) // -Confirm:$false
+                {
                     return ConfirmImpact.None;
+                }
 
                 if (!_isConfirmPreferenceCached)
                 {
-                    bool defaultUsed = false;
-                    _confirmPreference = Context.GetEnumPreference<ConfirmImpact>(SpecialVariables.ConfirmPreferenceVarPath, _confirmPreference, out defaultUsed);
+                    _confirmPreference = Context.GetEnumPreference<ConfirmImpact>(
+                        SpecialVariables.ConfirmPreferenceVarPath, _confirmPreference, out _);
                     _isConfirmPreferenceCached = true;
                 }
 
@@ -2846,14 +2868,14 @@ namespace System.Management.Automation
             }
         }
 
-        private bool _isDebugPreferenceSet = false;
+        private bool _isDebugPreferenceSet;
         private ActionPreference _debugPreference = InitialSessionState.defaultDebugPreference;
-        private bool _isDebugPreferenceCached = false;
+        private bool _isDebugPreferenceCached;
         /// <summary>
-        /// Preference setting.
+        /// Gets or sets the $DebugPreference setting.
         /// </summary>
         /// <exception cref="System.Management.Automation.ExtendedTypeSystemException">
-        /// (get-only) An error occurred accessing $DebugPreference.
+        /// (Get-only) An error occurred accessing $DebugPreference.
         /// </exception>
         internal ActionPreference DebugPreference
         {
@@ -2871,13 +2893,12 @@ namespace System.Management.Automation
 
                 if (!_isDebugPreferenceCached)
                 {
-                    bool defaultUsed = false;
-
-                    _debugPreference = Context.GetEnumPreference<ActionPreference>(SpecialVariables.DebugPreferenceVarPath, _debugPreference, out defaultUsed);
+                    _debugPreference = Context.GetEnumPreference<ActionPreference>(
+                        SpecialVariables.DebugPreferenceVarPath, _debugPreference, out _);
 
                     // If the host couldn't prompt for the debug action anyways, change it to 'Continue'.
                     // This lets hosts still see debug output without having to implement the prompting logic.
-                    if ((CBhost.ExternalHost.UI == null) && (_debugPreference == ActionPreference.Inquire))
+                    if (CBhost.ExternalHost.UI == null && _debugPreference == ActionPreference.Inquire)
                     {
                         _debugPreference = ActionPreference.Continue;
                     }
@@ -2898,7 +2919,7 @@ namespace System.Management.Automation
         private bool _isVerbosePreferenceCached = false;
         private ActionPreference _verbosePreference = InitialSessionState.defaultVerbosePreference;
         /// <summary>
-        /// Preference setting.
+        /// Gets or sets the $VerbosePreference setting.
         /// </summary>
         /// <exception cref="System.Management.Automation.ExtendedTypeSystemException">
         /// An error occurred accessing $VerbosePreference.
@@ -2909,45 +2930,36 @@ namespace System.Management.Automation
             {
                 if (IsVerboseFlagSet)
                 {
-                    if (Verbose)
-                        return ActionPreference.Continue;
-                    else
-                        return ActionPreference.SilentlyContinue;
+                    return Verbose ? ActionPreference.Continue : ActionPreference.SilentlyContinue;
                 }
 
                 if (Debug)
                 {
                     // If the host couldn't prompt for the debug action anyways, use 'Continue'.
                     // This lets hosts still see debug output without having to implement the prompting logic.
-                    if (CBhost.ExternalHost.UI == null)
-                    {
-                        return ActionPreference.Continue;
-                    }
-                    else
-                    {
-                        return ActionPreference.Inquire;
-                    }
+                    return CBhost.ExternalHost.UI == null
+                        ? ActionPreference.Continue
+                        : ActionPreference.Inquire;
                 }
 
                 if (!_isVerbosePreferenceCached)
                 {
-                    bool defaultUsed = false;
                     _verbosePreference = Context.GetEnumPreference<ActionPreference>(
                         SpecialVariables.VerbosePreferenceVarPath,
                         _verbosePreference,
-                        out defaultUsed);
+                        out _);
                 }
 
                 return _verbosePreference;
             }
         }
 
-        internal bool IsWarningActionSet { get; private set; } = false;
+        internal bool IsWarningActionSet { get; private set; }
 
-        private bool _isWarningPreferenceCached = false;
+        private bool _isWarningPreferenceCached;
         private ActionPreference _warningPreference = InitialSessionState.defaultWarningPreference;
         /// <summary>
-        /// Preference setting.
+        /// Gets or sets the $WarningPreference setting.
         /// </summary>
         /// <exception cref="System.Management.Automation.ExtendedTypeSystemException">
         /// An error occurred accessing $WarningPreference.
@@ -2958,18 +2970,25 @@ namespace System.Management.Automation
             {
                 // Setting CommonParameters.WarningAction has highest priority
                 if (IsWarningActionSet)
+                {
                     return _warningPreference;
+                }
 
-                if (Debug)
-                    return ActionPreference.Inquire;
-                if (Verbose)
-                    return ActionPreference.Continue;
                 // Debug:$false and Verbose:$false ignored
+                if (Debug)
+                {
+                    return ActionPreference.Inquire;
+                }
+
+                if (Verbose)
+                {
+                    return ActionPreference.Continue;
+                }
 
                 if (!_isWarningPreferenceCached)
                 {
-                    bool defaultUsed = false;
-                    _warningPreference = Context.GetEnumPreference<ActionPreference>(SpecialVariables.WarningPreferenceVarPath, _warningPreference, out defaultUsed);
+                    _warningPreference = Context.GetEnumPreference<ActionPreference>(
+                        SpecialVariables.WarningPreferenceVarPath, _warningPreference, out _);
                 }
 
                 return _warningPreference;
@@ -2987,10 +3006,9 @@ namespace System.Management.Automation
             }
         }
 
-        // This is used so that people can tell whether the verbose switch
-        // was specified.  This is useful in the Cmdlet-calling-Cmdlet case
-        // where you'd like the underlying Cmdlet to have the same switches.
-        private bool _verboseFlag = false;
+        // This is used so that people can tell whether the verbose switch was specified.  This is useful in
+        // the Cmdlet-calling-Cmdlet case where you'd like the underlying Cmdlet to have the same switches.
+        private bool _verboseFlag;
 
         /// <summary>
         /// Echo tells the command to articulate the actions it performs while executing.
@@ -3000,8 +3018,7 @@ namespace System.Management.Automation
         /// </remarks>
         internal bool Verbose
         {
-            get { return _verboseFlag; }
-
+            get => _verboseFlag;
             set
             {
                 _verboseFlag = value;
@@ -3009,9 +3026,9 @@ namespace System.Management.Automation
             }
         }
 
-        internal bool IsVerboseFlagSet { get; private set; } = false;
+        internal bool IsVerboseFlagSet { get; private set; }
 
-        private bool _confirmFlag = false;
+        private bool _confirmFlag;
 
         /// <summary>
         /// Confirm tells the command to ask the admin before performing an action.
@@ -3021,11 +3038,7 @@ namespace System.Management.Automation
         /// </remarks>
         internal SwitchParameter Confirm
         {
-            get
-            {
-                return _confirmFlag;
-            }
-
+            get => _confirmFlag;
             set
             {
                 _confirmFlag = value;
@@ -3033,11 +3046,13 @@ namespace System.Management.Automation
             }
         }
 
-        internal bool IsConfirmFlagSet { get; private set; } = false;
+        internal bool IsConfirmFlagSet { get; private set; }
 
-        private bool _useTransactionFlag = false;
+        private bool _useTransactionFlag;
 
         /// <summary>
+        /// Gets or sets the value of the UseTransaction setting.
+        ///
         /// UseTransaction tells the command to activate the current PowerShell transaction.
         /// </summary>
         /// <remarks>
@@ -3045,11 +3060,7 @@ namespace System.Management.Automation
         /// </remarks>
         internal SwitchParameter UseTransaction
         {
-            get
-            {
-                return _useTransactionFlag;
-            }
-
+            get => _useTransactionFlag;
             set
             {
                 _useTransactionFlag = value;
@@ -3057,24 +3068,24 @@ namespace System.Management.Automation
             }
         }
 
-        internal bool UseTransactionFlagSet { get; private set; } = false;
+        internal bool UseTransactionFlagSet { get; private set; }
 
-        // This is used so that people can tell whether the debug switch was specified.  This
-        // Is useful in the Cmdlet-calling-Cmdlet case where you'd like the underlying Cmdlet to
-        // have the same switches.
-        private bool _debugFlag = false;
+        // This is used so that people can tell whether the debug switch was specified.  This is useful
+        // in the Cmdlet-calling-Cmdlet case where you'd like the underlying Cmdlet to have the same switches.
+        private bool _debugFlag;
 
         /// <summary>
-        /// Debug tell the command system to provide Programmer/Support type messages to understand what is really occuring
-        /// and give the user the opportunity to stop or debug the situation.
+        /// Gets or sets the value of the Debug option.
+        ///
+        /// Debug tell the command system to provide Programmer/Support type messages to understand what is
+        /// really occuring and give the user the opportunity to stop or debug the situation.
         /// </summary>
         /// <remarks>
         /// This is a common parameter via class CommonParameters.
         /// </remarks>
         internal bool Debug
         {
-            get { return _debugFlag; }
-
+            get => _debugFlag;
             set
             {
                 _debugFlag = value;
@@ -3082,13 +3093,14 @@ namespace System.Management.Automation
             }
         }
 
-        internal bool IsDebugFlagSet { get; private set; } = false;
+        internal bool IsDebugFlagSet { get; private set; }
 
         private bool _whatIfFlag = InitialSessionState.defaultWhatIfPreference;
-        private bool _isWhatIfPreferenceCached /* = false */;
+        private bool _isWhatIfPreferenceCached;
         /// <summary>
-        /// WhatIf indicates that the command should not
-        /// perform any changes to persistent state outside Monad.
+        /// Gets or sets the value of the WhatIf option.
+        ///
+        /// WhatIf indicates that the command should not perform any changes to system state outside PowerShell.
         /// </summary>
         /// <remarks>
         /// This is a common parameter via class ShouldProcessParameters.
@@ -3097,10 +3109,10 @@ namespace System.Management.Automation
         {
             get
             {
-                if (!IsWhatIfFlagSet && !_isWhatIfPreferenceCached)
+                if (!(IsWhatIfFlagSet || _isWhatIfPreferenceCached))
                 {
-                    bool defaultUsed = false;
-                    _whatIfFlag = Context.GetBooleanPreference(SpecialVariables.WhatIfPreferenceVarPath, _whatIfFlag, out defaultUsed);
+                    _whatIfFlag = Context.GetBooleanPreference(
+                        SpecialVariables.WhatIfPreferenceVarPath, _whatIfFlag, out _);
                     _isWhatIfPreferenceCached = true;
                 }
 
@@ -3117,12 +3129,14 @@ namespace System.Management.Automation
         internal bool IsWhatIfFlagSet { get; private set; }
 
         private ActionPreference _errorAction = InitialSessionState.defaultErrorActionPreference;
-        private bool _isErrorActionPreferenceCached = false;
+        private bool _isErrorActionPreferenceCached;
         /// <summary>
+        /// Gets or sets the value of the ErrorAction preference setting.
+        ///
         /// ErrorAction tells the command what to do when an error occurs.
         /// </summary>
         /// <exception cref="System.Management.Automation.ExtendedTypeSystemException">
-        /// (get-only) An error occurred accessing $ErrorAction.
+        /// (Get-only) An error occurred accessing $ErrorAction.
         /// </exception>
         /// <remarks>
         /// This is a common parameter via class CommonParameters.
@@ -3133,12 +3147,14 @@ namespace System.Management.Automation
             {
                 // Setting CommonParameters.ErrorAction has highest priority
                 if (IsErrorActionSet)
+                {
                     return _errorAction;
+                }
 
                 if (!_isErrorActionPreferenceCached)
                 {
-                    bool defaultUsed = false;
-                    _errorAction = Context.GetEnumPreference<ActionPreference>(SpecialVariables.ErrorActionPreferenceVarPath, _errorAction, out defaultUsed);
+                    _errorAction = Context.GetEnumPreference<ActionPreference>(
+                        SpecialVariables.ErrorActionPreferenceVarPath, _errorAction, out _);
                     _isErrorActionPreferenceCached = true;
                 }
 
@@ -3147,9 +3163,11 @@ namespace System.Management.Automation
 
             set
             {
+                // Suspend is not a valid preference value for -ErrorAction
                 if (value == ActionPreference.Suspend)
                 {
-                    throw PSTraceSource.NewNotSupportedException(ErrorPackage.SuspendActionPreferenceSupportedOnlyOnWorkflow);
+                    throw PSTraceSource.NewNotSupportedException(
+                        ErrorPackage.SuspendActionPreferenceSupportedOnlyOnWorkflow);
                 }
 
                 _errorAction = value;
@@ -3157,23 +3175,25 @@ namespace System.Management.Automation
             }
         }
 
-        internal bool IsErrorActionSet { get; private set; } = false;
+        internal bool IsErrorActionSet { get; private set; }
 
         /// <summary>
-        /// Preference setting for displaying ProgressRecords when WriteProgress is called.
+        /// Gets or sets the preference value for the ProgressPreference setting, for displaying ProgressRecords
+        /// when WriteProgress is called.
         /// </summary>
-        /// <value></value>
         internal ActionPreference ProgressPreference
         {
             get
             {
                 if (_isProgressPreferenceSet)
+                {
                     return _progressPreference;
+                }
 
                 if (!_isProgressPreferenceCached)
                 {
-                    bool defaultUsed = false;
-                    _progressPreference = Context.GetEnumPreference<ActionPreference>(SpecialVariables.ProgressPreferenceVarPath, _progressPreference, out defaultUsed);
+                    _progressPreference = Context.GetEnumPreference<ActionPreference>(
+                        SpecialVariables.ProgressPreferenceVarPath, _progressPreference, out _);
                     _isProgressPreferenceCached = true;
                 }
 
@@ -3188,24 +3208,26 @@ namespace System.Management.Automation
         }
 
         private ActionPreference _progressPreference = InitialSessionState.defaultProgressPreference;
-        private bool _isProgressPreferenceSet = false;
-        private bool _isProgressPreferenceCached = false;
+        private bool _isProgressPreferenceSet;
+        private bool _isProgressPreferenceCached;
 
         /// <summary>
-        /// Preference setting for displaying InformationRecords when WriteInformation is called.
+        /// Gets or sets the InformationPreference setting for displaying InformationRecords when
+        /// WriteInformation is called.
         /// </summary>
-        /// <value></value>
         internal ActionPreference InformationPreference
         {
             get
             {
                 if (IsInformationActionSet)
+                {
                     return _informationPreference;
+                }
 
                 if (!_isInformationPreferenceCached)
                 {
-                    bool defaultUsed = false;
-                    _informationPreference = Context.GetEnumPreference<ActionPreference>(SpecialVariables.InformationPreferenceVarPath, _informationPreference, out defaultUsed);
+                    _informationPreference = Context.GetEnumPreference<ActionPreference>(
+                        SpecialVariables.InformationPreferenceVarPath, _informationPreference, out _);
                     _isInformationPreferenceCached = true;
                 }
 
@@ -3214,6 +3236,7 @@ namespace System.Management.Automation
 
             set
             {
+                // Suspend is not a valid value for $InformationPreference
                 if (value == ActionPreference.Suspend)
                 {
                     throw PSTraceSource.NewNotSupportedException(ErrorPackage.SuspendActionPreferenceErrorActionOnly);
@@ -3226,9 +3249,9 @@ namespace System.Management.Automation
 
         private ActionPreference _informationPreference = InitialSessionState.defaultInformationPreference;
 
-        internal bool IsInformationActionSet { get; private set; } = false;
+        internal bool IsInformationActionSet { get; private set; }
 
-        private bool _isInformationPreferenceCached = false;
+        private bool _isInformationPreferenceCached;
 
         internal PagingParameters PagingParameters { get; set; }
 
@@ -3239,8 +3262,7 @@ namespace System.Management.Automation
         #region Helpers
 
         /// <summary>
-        /// ContinueStatus indicates the last reply from the user
-        /// whether or not the command should process an object.
+        /// ContinueStatus indicates the last reply from the user whether or not the command should process an object.
         /// </summary>
         internal enum ContinueStatus
         {
@@ -3259,16 +3281,16 @@ namespace System.Management.Automation
         internal ContinueStatus lastInformationContinueStatus = ContinueStatus.Yes;
 
         /// <summary>
-        /// Should the verbose/debug/progress message be printed?
+        /// Verifies whether the verbose/debug/progress message should be printed.
         /// </summary>
-        /// <param name="preference"></param>
-        /// <param name="lastContinueStatus"></param>
-        /// <returns></returns>
+        /// <param name="preference">The ActionPreference value to consider when determining whether to print
+        /// the message.</param>
+        /// <param name="lastContinueStatus">If "YesToAll" or "NoToAll" has been previously indicated, the value
+        /// here will allow the decision to take those into account.</param>
+        /// <returns>True if the message should be printed.</returns>
         /// <exception cref="System.Management.Automation.PipelineStoppedException"></exception>
         /// <exception cref="System.InvalidOperationException"></exception>
-        internal bool WriteHelper_ShouldWrite(
-            ActionPreference preference,
-            ContinueStatus lastContinueStatus)
+        internal bool WriteHelper_ShouldWrite(ActionPreference preference, ContinueStatus lastContinueStatus)
         {
             ThrowIfStopping();
 
@@ -3321,19 +3343,18 @@ namespace System.Management.Automation
         /// <param name="lastContinueStatus"></param>
         /// <param name="preferenceVariableName"></param>
         /// <param name="message"></param>
-        /// <returns>Did Inquire return YesToAll?.</returns>
+        /// <returns>Whether Inquire returned YesToAll.</returns>
         /// <exception cref="System.Management.Automation.PipelineStoppedException">
-        /// The pipeline has already been terminated, or was terminated
-        /// during the execution of this method.
-        /// The Cmdlet should generally just allow PipelineStoppedException
-        /// to propagate up to the caller of ProcessRecord etc.
+        /// The pipeline has already been terminated, or was terminated during the execution of this method.
+        /// The Cmdlet should generally just allow PipelineStoppedException to propagate up to the caller
+        /// of ProcessRecord etc.
         /// </exception>
         /// <remarks>
-        /// If the pipeline is terminated due to ActionPreference.Stop
-        /// or ActionPreference.Inquire, this method will throw
-        /// <see cref="System.Management.Automation.PipelineStoppedException"/>,
+        /// If the pipeline is terminated due to ActionPreference.Stop or ActionPreference.Inquire, this
+        /// method will throw
+        /// <see cref="System.Management.Automation.PipelineStoppedException" />,
         /// but the command failure will ultimately be
-        /// <see cref="System.Management.Automation.ActionPreferenceStopException"/>,
+        /// <see cref="System.Management.Automation.ActionPreferenceStopException" />.
         /// </remarks>
         internal ContinueStatus WriteHelper(
             string inquireCaption,
@@ -3359,10 +3380,9 @@ namespace System.Management.Automation
                     return ContinueStatus.Yes;
 
                 case ActionPreference.Stop:
-                    ActionPreferenceStopException e =
-                        new ActionPreferenceStopException(
-                            MyInvocation,
-                            StringUtil.Format(CommandBaseStrings.ErrorPreferenceStop, preferenceVariableName, message));
+                    ActionPreferenceStopException e = new ActionPreferenceStopException(
+                        MyInvocation,
+                        StringUtil.Format(CommandBaseStrings.ErrorPreferenceStop, preferenceVariableName, message));
                     throw ManageException(e);
 
                 case ActionPreference.Inquire:
@@ -3370,20 +3390,19 @@ namespace System.Management.Automation
 
                 default:
                     Dbg.Assert(false, "Bad preference value" + preference);
-                    ActionPreferenceStopException apse =
-                        new ActionPreferenceStopException(
-                            MyInvocation,
-                            StringUtil.Format(CommandBaseStrings.PreferenceInvalid, preferenceVariableName, preference));
+                    ActionPreferenceStopException apse = new ActionPreferenceStopException(
+                        MyInvocation,
+                        StringUtil.Format(CommandBaseStrings.PreferenceInvalid, preferenceVariableName, preference));
                     throw ManageException(apse);
             }
 
             return InquireHelper(
                 inquireMessage,
                 inquireCaption,
-                true,  // allowYesToAll
-                false, // allowNoToAll
-                true,  // replaceNoWithHalt
-                false  // hasSecurityImpact
+                allowYesToAll: true,
+                allowNoToAll: false,
+                replaceNoWithHalt: true,
+                hasSecurityImpact: false
             );
         }
 
@@ -3406,9 +3425,9 @@ namespace System.Management.Automation
         /// <remarks>
         /// If the pipeline is terminated due to ActionPreference.Stop
         /// or ActionPreference.Inquire, this method will throw
-        /// <see cref="System.Management.Automation.PipelineStoppedException"/>,
+        /// <see cref="System.Management.Automation.PipelineStoppedException" />,
         /// but the command failure will ultimately be
-        /// <see cref="System.Management.Automation.ActionPreferenceStopException"/>,
+        /// <see cref="System.Management.Automation.ActionPreferenceStopException" />,
         /// </remarks>
         internal ContinueStatus InquireHelper(
             string inquireMessage,
@@ -3416,11 +3435,9 @@ namespace System.Management.Automation
             bool allowYesToAll,
             bool allowNoToAll,
             bool replaceNoWithHalt,
-            bool hasSecurityImpact
-            )
+            bool hasSecurityImpact)
         {
-            Collection<ChoiceDescription> choices =
-                new Collection<ChoiceDescription>();
+            Collection<ChoiceDescription> choices = new Collection<ChoiceDescription>();
             int currentOption = 0;
 
             int continueOneOption = Int32.MaxValue,
@@ -3512,8 +3529,7 @@ namespace System.Management.Automation
                     defaultOption = skipOneOption;
                 }
 
-                int response = this.CBhost.UI.PromptForChoice(
-                    inquireCaption, inquireMessage, choices, defaultOption);
+                int response = this.CBhost.UI.PromptForChoice(inquireCaption, inquireMessage, choices, defaultOption);
 
                 string chosen = choices[response].Label;
                 int labelIndex = chosen.IndexOf('&');
@@ -3524,42 +3540,35 @@ namespace System.Management.Automation
 
                 CBhost.InternalUI.TranscribeResult(chosen);
 
-                if (continueOneOption == response)
-                    return ContinueStatus.Yes;
-                else if (continueAllOption == response)
-                    return ContinueStatus.YesToAll;
-                else if (haltOption == response)
+                switch (response)
                 {
-                    ActionPreferenceStopException e =
-                        new ActionPreferenceStopException(
+                    case int c1 when c1 == continueOneOption:
+                        return ContinueStatus.Yes;
+                    case int c2 when c2 == continueAllOption:
+                        return ContinueStatus.YesToAll;
+                    case int c3 when c3 == haltOption:
+                        var e = new ActionPreferenceStopException(
                             MyInvocation,
                             CommandBaseStrings.InquireHalt);
-                    throw ManageException(e);
-                }
-                else if (skipOneOption == response)
-                    return ContinueStatus.No;
-                else if (skipAllOption == response)
-                    return ContinueStatus.NoToAll;
-                else if (pauseOption == response)
-                {
-                    // This call returns when the user exits the nested prompt.
-                    CBhost.EnterNestedPrompt(_thisCommand);
-                    // continue loop
-                }
-                else if (-1 == response)
-                {
-                    ActionPreferenceStopException e =
-                        new ActionPreferenceStopException(
-                            MyInvocation,
-                            CommandBaseStrings.InquireCtrlC);
-                    throw ManageException(e);
-                }
-                else
-                {
-                    Dbg.Assert(false, "all cases should be checked");
-                    InvalidOperationException e =
-                        PSTraceSource.NewInvalidOperationException();
-                    throw ManageException(e);
+                        throw ManageException(e);
+                    case int c4 when c4 == skipOneOption:
+                        return ContinueStatus.No;
+                    case int c5 when c5 == skipAllOption:
+                        return ContinueStatus.NoToAll;
+                    case int c6 when c6 == pauseOption:
+                        // This call returns when the user exits the nested prompt.
+                        CBhost.EnterNestedPrompt(_thisCommand);
+                        // continue loop
+                        break;
+                    case -1:
+                        var stopEx = new ActionPreferenceStopException(
+                                MyInvocation,
+                                CommandBaseStrings.InquireCtrlC);
+                        throw ManageException(stopEx);
+                    default:
+                        Dbg.Assert(false, "all cases should be checked");
+                        var invalidEx = PSTraceSource.NewInvalidOperationException();
+                        throw ManageException(invalidEx);
                 }
             } while (true);
         }
@@ -3571,13 +3580,10 @@ namespace System.Management.Automation
         {
             Dbg.Assert(this.CBhost != null, "Expected this.CBhost != null");
             Dbg.Assert(this.CBhost.ExternalHost != null, "Expected this.CBhost.ExternalHost != null");
-            if (this.CBhost.ExternalHost is ServerRemoteHost)
-            {
-                return false;
-            }
 
-            return true;
+            return !(this.CBhost.ExternalHost is ServerRemoteHost);
         }
+
         #endregion Helpers
 
         #endregion Continue/Confirm
@@ -3614,8 +3620,6 @@ namespace System.Management.Automation
 
         internal void RemoveVariableListsInPipe()
         {
-            // Diagnostics.Assert(thisCommand is PSScriptCmdlet, "this is only done for script cmdlets");
-
             if (OutVarList != null)
             {
                 this.OutputPipe.RemoveVariableList(VariableStreamKind.Output, OutVarList);

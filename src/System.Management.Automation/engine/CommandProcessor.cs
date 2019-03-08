@@ -548,7 +548,7 @@ namespace System.Management.Automation
                             bindingError.ErrorRecord,
                             bindingError);
 
-                    this.commandRuntime._WriteErrorSkipAllowCheck(errorRecord);
+                    this.commandRuntime.WriteErrorSkipAllowCheck(errorRecord);
                     continue;
                 }
 
@@ -628,7 +628,7 @@ namespace System.Management.Automation
 
             errorRecord.SetInvocationInfo(this.Command.MyInvocation);
 
-            this.commandRuntime._WriteErrorSkipAllowCheck(errorRecord);
+            this.commandRuntime.WriteErrorSkipAllowCheck(errorRecord);
         }
 
         /// <summary>
