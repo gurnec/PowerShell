@@ -3547,10 +3547,8 @@ namespace System.Management.Automation
                     case int c2 when c2 == continueAllOption:
                         return ContinueStatus.YesToAll;
                     case int c3 when c3 == haltOption:
-                        var e = new ActionPreferenceStopException(
-                            MyInvocation,
-                            CommandBaseStrings.InquireHalt);
-                        throw ManageException(e);
+                        throw ManageException(
+                            new ActionPreferenceStopException(MyInvocation, CommandBaseStrings.InquireHalt));
                     case int c4 when c4 == skipOneOption:
                         return ContinueStatus.No;
                     case int c5 when c5 == skipAllOption:
@@ -3561,14 +3559,11 @@ namespace System.Management.Automation
                         // continue loop
                         break;
                     case -1:
-                        var stopEx = new ActionPreferenceStopException(
-                                MyInvocation,
-                                CommandBaseStrings.InquireCtrlC);
-                        throw ManageException(stopEx);
+                        throw ManageException(
+                            new ActionPreferenceStopException(MyInvocation, CommandBaseStrings.InquireCtrlC));
                     default:
                         Dbg.Assert(false, "all cases should be checked");
-                        var invalidEx = PSTraceSource.NewInvalidOperationException();
-                        throw ManageException(invalidEx);
+                        throw ManageException(PSTraceSource.NewInvalidOperationException());
                 }
             } while (true);
         }
