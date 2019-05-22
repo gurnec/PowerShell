@@ -2249,6 +2249,7 @@ namespace System.Management.Automation
                     }
                 case "Push-Location":
                 case "Set-Location":
+                case "Use-Location":
                     {
                         NativeCompletionSetLocationCommand(context, parameterName, result);
                         break;

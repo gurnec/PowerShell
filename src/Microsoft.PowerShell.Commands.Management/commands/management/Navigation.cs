@@ -1070,6 +1070,155 @@ namespace Microsoft.PowerShell.Commands
 
     #endregion PopLocationCommand
 
+    #region UseLocationCommand
+
+    /// <summary>
+    /// The core command for setting/changing location for the duration of a specified script, then returning to the
+    /// original location.
+    /// This is the equivalent to Push-Location; { script }; Pop-Location
+    /// </summary>
+    [Cmdlet(VerbsOther.Use, "Location", DefaultParameterSetName = PathParameterSet, SupportsTransactions = true,
+        HelpUri = "https://go.microsoft.com/fwlink/?LinkID=113370")]
+    [Alias("ul")]
+    public class UseLocationCommand : CoreCommandBase
+    {
+        #region Command parameters
+        private const string PathParameterSet = "Path";
+        private const string LiteralPathParameterSet = "LiteralPath";
+
+        /// <summary>
+        /// Gets or sets the path parameter to the command.
+        /// </summary>
+        ///
+        [Parameter(Mandatory = true, Position = 0, ValueFromPipeline = true, ValueFromPipelineByPropertyName = true,
+            ParameterSetName = PathParameterSet)]
+        public string Path
+        {
+            get => _path;
+            set => _path = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the literal path parameter to the command.
+        /// </summary>
+        [Parameter(Mandatory = true, ParameterSetName = LiteralPathParameterSet,
+                   ValueFromPipeline = false, ValueFromPipelineByPropertyName = true)]
+        [Alias("PSPath", "LP")]
+        public string LiteralPath
+        {
+            get => _path;
+            set
+            {
+                base.SuppressWildcardExpansion = true;
+                _path = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the -InputObject pipeline parameter for the command.
+        /// </summary>
+        /// <value></value>
+        [Parameter(ValueFromPipeline = true)]
+        public PSObject InputObject { get; set; }
+
+        /// <summary>
+        /// Gets or sets the parameter -ScriptBlock which defines the action to take at the requested location.
+        /// </summary>
+        [Parameter(Mandatory = true, Position = 1, ValueFromPipelineByPropertyName = true)]
+        public ScriptBlock ScriptBlock { get; set; }
+
+        /// <summary>
+        /// Gets or sets the arguments to be provided to the scriptblock.
+        /// </summary>
+        [Parameter(Position = 2, ValueFromRemainingArguments = true, ValueFromPipelineByPropertyName = true)]
+        public PSObject[] ArgumentList { get; set; }
+
+        /// <summary>
+        /// Gets or sets the StackName parameter which determines which location stack to use for the push.
+        /// If the parameter is missing or empty the default location stack is used.
+        /// </summary>
+        [Parameter(ValueFromPipelineByPropertyName = true)]
+        public string StackName { get; set; }
+
+        #endregion Command parameters
+
+        #region Command data
+
+        /// <summary>
+        /// The filter used when doing a dir.
+        /// </summary>
+        private string _path = string.Empty;
+
+        #endregion Command data
+
+        #region Command code
+
+        /// <summary>
+        /// The functional part of the code that does the changing of the current
+        /// working directory and pushes the container onto the stack.
+        /// </summary>
+        protected override void ProcessRecord()
+        {
+            // Push the current working directory onto the
+            // working directory stack
+            SessionState.Path.PushCurrentLocation(StackName);
+
+            if (Path != null)
+            {
+                try
+                {
+                    // Now change the directory to the one specified in the command
+                    PathInfo _ = SessionState.Path.SetLocation(Path, CmdletProviderContext);
+
+                    this.ScriptBlock.DoInvokeReturnAsIs(
+                        useLocalScope: false,
+                        errorHandlingBehavior: ScriptBlock.ErrorHandlingBehavior.WriteToCurrentErrorPipe,
+                        dollarUnder: InputObject,
+                        input: null,
+                        scriptThis: null,
+                        args: ArgumentList);
+                }
+                catch (PSNotSupportedException notSupported)
+                {
+                    WriteError(
+                        new ErrorRecord(notSupported.ErrorRecord, notSupported));
+                    return;
+                }
+                catch (DriveNotFoundException driveNotFound)
+                {
+                    WriteError(
+                        new ErrorRecord(driveNotFound.ErrorRecord, driveNotFound));
+                    return;
+                }
+                catch (ProviderNotFoundException providerNotFound)
+                {
+                    WriteError(
+                        new ErrorRecord(providerNotFound.ErrorRecord, providerNotFound));
+                    return;
+                }
+                catch (ItemNotFoundException pathNotFound)
+                {
+                    WriteError(new ErrorRecord(pathNotFound.ErrorRecord, pathNotFound));
+                    return;
+                }
+                catch (PSArgumentException argException)
+                {
+                    WriteError(
+                        new ErrorRecord(argException.ErrorRecord, argException));
+                    return;
+                }
+                finally
+                {
+                    SessionState.Path.PopLocation(StackName);
+                }
+            }
+        }
+
+        #endregion Command code
+    }
+
+    #endregion UseLocationCommand
+
     #region Drive commands
 
     #region NewPSDriveCommand
