@@ -1087,6 +1087,13 @@ namespace Microsoft.PowerShell.Commands
         private const string LiteralPathParameterSet = "LiteralPath";
 
         /// <summary>
+        /// Gets or sets the -InputObject pipeline parameter for the command.
+        /// </summary>
+        /// <value></value>
+        [Parameter(ValueFromPipeline = true)]
+        public PSObject InputObject { get; set; }
+
+        /// <summary>
         /// Gets or sets the path parameter to the command.
         /// </summary>
         ///
@@ -1113,13 +1120,6 @@ namespace Microsoft.PowerShell.Commands
                 _path = value;
             }
         }
-
-        /// <summary>
-        /// Gets or sets the -InputObject pipeline parameter for the command.
-        /// </summary>
-        /// <value></value>
-        [Parameter(ValueFromPipeline = true)]
-        public PSObject InputObject { get; set; }
 
         /// <summary>
         /// Gets or sets the parameter -ScriptBlock which defines the action to take at the requested location.
@@ -1170,13 +1170,13 @@ namespace Microsoft.PowerShell.Commands
                     // Now change the directory to the one specified in the command
                     PathInfo _ = SessionState.Path.SetLocation(Path, CmdletProviderContext);
 
-                    this.ScriptBlock.DoInvokeReturnAsIs(
+                    WriteObject(this.ScriptBlock.DoInvokeReturnAsIs(
                         useLocalScope: false,
                         errorHandlingBehavior: ScriptBlock.ErrorHandlingBehavior.WriteToCurrentErrorPipe,
                         dollarUnder: InputObject,
                         input: null,
                         scriptThis: null,
-                        args: ArgumentList);
+                        args: ArgumentList));
                 }
                 catch (PSNotSupportedException notSupported)
                 {
