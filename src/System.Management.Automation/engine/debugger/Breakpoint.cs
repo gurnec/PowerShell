@@ -534,10 +534,11 @@ namespace System.Management.Automation
             {
                 var ast = scriptBlock.Ast;
                 var bodyAst = ((IParameterMetadataProvider)ast).Body;
-                if ((bodyAst.DynamicParamBlock == null || bodyAst.DynamicParamBlock.Extent.IsAfter(Line, Column)) &&
-                    (bodyAst.BeginBlock == null || bodyAst.BeginBlock.Extent.IsAfter(Line, Column)) &&
-                    (bodyAst.ProcessBlock == null || bodyAst.ProcessBlock.Extent.IsAfter(Line, Column)) &&
-                    (bodyAst.EndBlock == null || bodyAst.EndBlock.Extent.IsAfter(Line, Column)))
+                if ((bodyAst.DynamicParamBlock == null || bodyAst.DynamicParamBlock.Extent.IsAfter(Line, Column))
+                    && (bodyAst.BeginBlock == null || bodyAst.BeginBlock.Extent.IsAfter(Line, Column))
+                    && (bodyAst.ProcessBlock == null || bodyAst.ProcessBlock.Extent.IsAfter(Line, Column))
+                    && (bodyAst.EndBlock == null || bodyAst.EndBlock.Extent.IsAfter(Line, Column))
+                    && (bodyAst.DisposeBlock == null || bodyAst.DisposeBlock.Extent.IsAfter(Line, Column)))
                 {
                     SetBreakpoint(functionContext, 0);
                     return true;

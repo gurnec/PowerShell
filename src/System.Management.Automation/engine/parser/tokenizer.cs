@@ -628,7 +628,7 @@ namespace System.Management.Automation.Language
         /*A*/    "configuration",           "public",           "private",          "static",                     /*A*/
         /*B*/    "interface",               "enum",             "namespace",        "module",                     /*B*/
         /*C*/    "type",                    "assembly",         "command",          "hidden",                     /*C*/
-        /*D*/    "base",                                                                                          /*D*/
+        /*D*/    "base",                    "dispose",                                                            /*D*/
         };
 
         private static readonly TokenKind[] s_keywordTokenKind = new TokenKind[] {
@@ -644,7 +644,7 @@ namespace System.Management.Automation.Language
         /*A*/    TokenKind.Configuration,   TokenKind.Public,   TokenKind.Private,  TokenKind.Static,             /*A*/
         /*B*/    TokenKind.Interface,       TokenKind.Enum,     TokenKind.Namespace,TokenKind.Module,             /*B*/
         /*C*/    TokenKind.Type,            TokenKind.Assembly, TokenKind.Command,  TokenKind.Hidden,             /*C*/
-        /*D*/    TokenKind.Base,                                                                                  /*D*/
+        /*D*/    TokenKind.Base,            TokenKind.Dispose,                                                    /*D*/
         };
 
         internal static readonly string[] _operatorText = new string[] {
@@ -885,9 +885,9 @@ namespace System.Management.Automation.Language
 
         internal void SkipNewlines(bool skipSemis)
         {
-            // We normally don't create any tokens in a Skip method, but the
-            // V2 tokenizer api returns newline, semi-colon, and line
-            // continuation tokens so we create them as they are encountered.
+        // We normally don't create any tokens in a Skip method, but the
+        // V2 tokenizer api returns newline, semi-colon, and line
+        // continuation tokens so we create them as they are encountered.
         again:
             char c = GetChar();
             switch (c)
