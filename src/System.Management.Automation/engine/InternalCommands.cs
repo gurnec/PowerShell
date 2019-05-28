@@ -157,6 +157,14 @@ namespace Microsoft.PowerShell.Commands
             }
         }
 
+        private bool _disposed;
+        /// <summary>
+        /// The script block to apply in complete processing.
+        /// </summary>
+        [Parameter(ParameterSetName = "ScriptBlockSet")]
+        [Alias("Dispose")]
+        public ScriptBlock DisposeScript { get; set; }
+
         /// <summary>
         /// Gets or sets the remaining script blocks to apply.
         /// </summary>
@@ -1248,6 +1256,58 @@ namespace Microsoft.PowerShell.Commands
                 target);
 
             return errorRecord;
+        }
+
+        /// <summary>
+        /// Execute the end scriptblock when the pipeline is complete.
+        /// </summary>
+        /// <exception cref="ParseException">Could not parse script.</exception>
+        /// <exception cref="RuntimeException">See Pipeline.Invoke.</exception>
+        /// <exception cref="ParameterBindingException">See Pipeline.Invoke.</exception>
+        protected override void EndProcessing()
+        {
+            if (ParameterSetName != "ScriptBlockSet") return;
+
+            if (_endScript == null)
+                return;
+
+            var emptyArray = Array.Empty<object>();
+            _endScript.InvokeUsingCmdlet(
+                contextCmdlet: this,
+                useLocalScope: false,
+                errorHandlingBehavior: ScriptBlock.ErrorHandlingBehavior.WriteToCurrentErrorPipe,
+                dollarUnder: AutomationNull.Value,
+                input: emptyArray,
+                scriptThis: AutomationNull.Value,
+                args: emptyArray);
+        }
+
+        /// <summary>
+        /// IDisposable implementation for ForEach-Object.
+        /// No-op if -Dispose parameter is not specified.
+        /// </summary>
+        public void Dispose()
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            try
+            {
+                DisposeScript?.InvokeUsingCmdlet(
+                    contextCmdlet: this,
+                    useLocalScope: false,
+                    errorHandlingBehavior: ScriptBlock.ErrorHandlingBehavior.WriteToCurrentErrorPipe,
+                    dollarUnder: InputObject,
+                    input: new object[] { InputObject },
+                    scriptThis: AutomationNull.Value,
+                    args: Array.Empty<object>());
+            }
+            finally
+            {
+                _disposed = true;
+            }
         }
     }
 
