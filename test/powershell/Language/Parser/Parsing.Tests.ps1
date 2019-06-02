@@ -1,6 +1,6 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License.
-set-strictmode -v 2
+Set-StrictMode -v 2
 
 Describe 'for statement parsing' -Tags "CI" {
     ShouldBeParseError 'for' MissingOpenParenthesisAfterKeyword 4 -CheckColumnNumber
@@ -148,17 +148,21 @@ Describe 'named blocks parsing' -Tags "CI" {
     ShouldBeParseError 'begin' MissingNamedStatementBlock 5
     ShouldBeParseError 'process' MissingNamedStatementBlock 7
     ShouldBeParseError 'end' MissingNamedStatementBlock 3
+    ShouldBeParseError 'dispose' MissingNamedStatementBlock 7
     ShouldBeParseError 'dynamicparam' MissingNamedStatementBlock 12
     ShouldBeParseError 'begin process {}' MissingNamedStatementBlock 6 -CheckColumnNumber
     ShouldBeParseError 'end process {}' MissingNamedStatementBlock 4 -CheckColumnNumber
+    ShouldBeParseError 'dispose process {}' MissingNamedStatementBlock 8 -CheckColumnNumber
     ShouldBeParseError 'dynamicparam process {}' MissingNamedStatementBlock 13 -CheckColumnNumber
     ShouldBeParseError 'process begin {}' MissingNamedStatementBlock 8 -CheckColumnNumber
-    ShouldBeParseError 'begin process end' MissingNamedStatementBlock,MissingNamedStatementBlock,MissingNamedStatementBlock 6,14,18 -CheckColumnNumber
+    ShouldBeParseError 'begin process end dispose' MissingNamedStatementBlock, MissingNamedStatementBlock, MissingNamedStatementBlock, MissingNamedStatementBlock 6, 14, 18, 26 -CheckColumnNumber
 
     Test-Ast 'begin' 'begin' 'begin'
     Test-Ast 'begin end' 'begin end' 'begin' 'end'
     Test-Ast 'begin end process' 'begin end process' 'begin' 'end' 'process'
     Test-Ast 'begin {} end' 'begin {} end' 'begin {}' 'end'
+    Test-Ast 'begin process end dispose' 'begin process end dispose' 'begin' 'dispose' 'end' 'process'
+    Test-Ast 'begin {} process end dispose {}' 'begin {} process end dispose {}' 'begin {}' 'dispose {}' 'end' 'process'
 }
 
 #
@@ -171,8 +175,8 @@ Describe 'data statement parsing' -Tags "CI" {
     ShouldBeParseError 'data -abc foo {}' InvalidParameterForDataSectionStatement 6 -CheckColumnNumber
     ShouldBeParseError 'data -abc & {}' InvalidParameterForDataSectionStatement 5
     ShouldBeParseError 'data -s & {}' MissingValueForSupportedCommandInDataSectionStatement 7
-    ShouldBeParseError 'data -s ) {}' MissingValueForSupportedCommandInDataSectionStatement,UnexpectedToken 8,9 -CheckColumnNumber
-    ShouldBeParseError 'data -s } {}' MissingValueForSupportedCommandInDataSectionStatement,UnexpectedToken 7,8
+    ShouldBeParseError 'data -s ) {}' MissingValueForSupportedCommandInDataSectionStatement, UnexpectedToken 8, 9 -CheckColumnNumber
+    ShouldBeParseError 'data -s } {}' MissingValueForSupportedCommandInDataSectionStatement, UnexpectedToken 7, 8
     ShouldBeParseError 'data -s ; {}' MissingValueForSupportedCommandInDataSectionStatement 7
     ShouldBeParseError 'data -sup a,' MissingValueForSupportedCommandInDataSectionStatement 13 -CheckColumnNumber
     ShouldBeParseError 'data -sup a,b' MissingStatementBlockForDataSection 14 -CheckColumnNumber
@@ -214,11 +218,11 @@ Describe 'try/catch/finally statement parsing' -Tags "CI" {
 
 Describe 'switch statement parsing' -Tags "CI" {
     ShouldBeParseError 'switch' PipelineValueRequired 6
-    ShouldBeParseError 'switch -abc' InvalidSwitchFlag,PipelineValueRequired 7,11
+    ShouldBeParseError 'switch -abc' InvalidSwitchFlag, PipelineValueRequired 7, 11
     ShouldBeParseError 'switch -file' MissingFilenameOption 12
-    ShouldBeParseError 'switch -file a (1)' PipelineValueRequired,MissingCurlyBraceInSwitchStatement 15,18
+    ShouldBeParseError 'switch -file a (1)' PipelineValueRequired, MissingCurlyBraceInSwitchStatement 15, 18
     ShouldBeParseError 'switch (' PipelineValueRequired 8
-    ShouldBeParseError 'switch ()' PipelineValueRequired,MissingCurlyBraceInSwitchStatement 8,9
+    ShouldBeParseError 'switch ()' PipelineValueRequired, MissingCurlyBraceInSwitchStatement 8, 9
     ShouldBeParseError 'switch ("abc")  ' MissingCurlyBraceInSwitchStatement 14
     ShouldBeParseError 'switch ("abc")  {' MissingSwitchConditionExpression 17
     ShouldBeParseError 'switch ("abc")  { 1' MissingSwitchStatementClause 19
@@ -358,10 +362,10 @@ Describe 'Unicode escape sequence parsing' -Tag "CI" {
     ShouldBeParseError '"`u{1234567}"' TooManyDigitsInUnicodeEscapeSequence 10 # error offset is "`u{123456>>7<<}"
     ShouldBeParseError '"`u{110000}"' InvalidUnicodeEscapeSequenceValue 4      # error offset is "`u{>>1<<10000}"
     ShouldBeParseError '"`u2195}"' InvalidUnicodeEscapeSequence 1
-    ShouldBeParseError '"`u{' InvalidUnicodeEscapeSequence,TerminatorExpectedAtEndOfString 4,0
-    ShouldBeParseError '"`u{1' InvalidUnicodeEscapeSequence,TerminatorExpectedAtEndOfString 5,0
-    ShouldBeParseError '"`u{123456' MissingUnicodeEscapeSequenceTerminator,TerminatorExpectedAtEndOfString 10,0
-    ShouldBeParseError '"`u{1234567' TooManyDigitsInUnicodeEscapeSequence,TerminatorExpectedAtEndOfString 10,0
+    ShouldBeParseError '"`u{' InvalidUnicodeEscapeSequence, TerminatorExpectedAtEndOfString 4, 0
+    ShouldBeParseError '"`u{1' InvalidUnicodeEscapeSequence, TerminatorExpectedAtEndOfString 5, 0
+    ShouldBeParseError '"`u{123456' MissingUnicodeEscapeSequenceTerminator, TerminatorExpectedAtEndOfString 10, 0
+    ShouldBeParseError '"`u{1234567' TooManyDigitsInUnicodeEscapeSequence, TerminatorExpectedAtEndOfString 10, 0
 }
 
 Describe "Ternary Operator parsing" -Tags CI {
