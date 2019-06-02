@@ -2442,7 +2442,7 @@ namespace System.Management.Automation.Language
 
             if (scriptBlockAst.DisposeBlock != null)
             {
-                _disposeBlockLambda = CompileNamedBlock(scriptBlockAst.DisposeBlock, funcName, rootForDefiningTypesAndUsings);
+                _disposeBlockLambda = CompileNamedBlock(scriptBlockAst.DisposeBlock, funcName + "<Dispose>", rootForDefiningTypesAndUsings);
                 rootForDefiningTypesAndUsings = null;
             }
 

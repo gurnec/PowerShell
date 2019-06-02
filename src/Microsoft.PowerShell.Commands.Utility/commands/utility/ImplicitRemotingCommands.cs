@@ -2800,7 +2800,7 @@ function Get-PSImplicitRemotingClientSideParameters
 
             $positionalArguments.AddRange($args)
 
-            $clientSideParameters = Get-PSImplicitRemotingClientSideParameters $PSBoundParameters ${8}
+            $clientSideParameters = Get-PSImplicitRemotingClientSideParameters $PSBoundParameters ${9}
 
             $scriptCmd = {{ & $script:InvokeCommand `
                             @clientSideParameters `
@@ -2820,6 +2820,8 @@ function Get-PSImplicitRemotingClientSideParameters
     Process {{ {6} }}
 
     End {{ {7} }}
+
+    Dispose {{ {8} }}
 
     # .ForwardHelpTargetName {1}
     # .ForwardHelpCategory {5}
@@ -2846,7 +2848,8 @@ function Get-PSImplicitRemotingClientSideParameters
                 /* 5 */ commandMetadata.WrappedCommandType,
                 /* 6 */ ProxyCommand.GetProcess(commandMetadata),
                 /* 7 */ ProxyCommand.GetEnd(commandMetadata),
-                /* 8 */ commandMetadata.WrappedAnyCmdlet);
+                /* 8 */ ProxyCommand.GetDispose(commandMetadata),
+                /* 9 */ commandMetadata.WrappedAnyCmdlet);
         }
 
         private void GenerateCommandProxy(TextWriter writer, IEnumerable<CommandMetadata> listOfCommandMetadata)
