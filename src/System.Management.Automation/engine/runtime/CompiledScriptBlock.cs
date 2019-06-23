@@ -723,7 +723,6 @@ namespace System.Management.Automation
                 args);
         }
 
-
         internal SteppablePipeline GetSteppablePipelineImpl(CommandOrigin commandOrigin, object[] args)
         {
             var pipelineAst = GetSimplePipeline(
@@ -2513,9 +2512,9 @@ namespace System.Management.Automation
             {
                 return;
             }
+
             try
             {
-
                 if (_scriptBlock.HasDisposeBlock)
                 {
                     RunClause(

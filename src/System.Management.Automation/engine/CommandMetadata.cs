@@ -1109,6 +1109,7 @@ dispose
     }
 ";
         }
+
         internal string GetDisposeBlock()
         {
             return @"

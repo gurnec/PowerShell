@@ -247,10 +247,9 @@ namespace System.Management.Automation
             return commandMetadata.GetEndBlock();
         }
 
-
         /// <summary>
         /// This method constructs a string representing the dispose block of the command
-        /// specified by <paramref name="commandMetadata"/>.  The returned string only contains the
+        /// specified by <paramref name="commandMetadata"/>. The returned string only contains the
         /// script, it is not enclosed in "dispose { }".
         /// </summary>
         /// <param name="commandMetadata">
@@ -260,7 +259,7 @@ namespace System.Management.Automation
         /// A string representing the end block of the command.
         /// </returns>
         /// <exception cref="ArgumentNullException">
-        /// commandMetadata is null.
+        /// If <paramref name="commandMetadata"/> is null.
         /// </exception>
         public static string GetDispose(CommandMetadata commandMetadata)
         {

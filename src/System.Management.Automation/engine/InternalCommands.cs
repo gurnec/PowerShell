@@ -158,8 +158,9 @@ namespace Microsoft.PowerShell.Commands
         }
 
         private bool _disposed;
+
         /// <summary>
-        /// The script block to apply in complete processing.
+        /// Gets or sets the script block to execute on command disposal.
         /// </summary>
         [Parameter(ParameterSetName = "ScriptBlockSet")]
         [Alias("Dispose")]

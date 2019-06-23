@@ -585,7 +585,7 @@ namespace System.Management.Automation.Language
         /// <summary>The 'base' keyword</summary>
         Base = 168,
 
-        /// <summary>The 'dispose' keyword</summary>
+        /// <summary>The 'dispose' keyword.</summary>
         Dispose = 169,
 
         #endregion Keywords

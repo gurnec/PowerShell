@@ -678,7 +678,6 @@ namespace System.Management.Automation
                 _context.ShellFunctionErrorOutputPipe = oldErrorOutputPipe;
                 _context.CurrentCommandProcessor = oldCurrentCommandProcessor;
 
-
                 // and the previous scope...
                 if (_previousScope != null)
                 {
@@ -991,6 +990,7 @@ namespace System.Management.Automation
 
                         _context.CurrentCommandProcessor = this;
                         SetCurrentScopeToExecutionScope();
+
                         // This is a no-op for compiled cmdlets
                         DisposeScriptCommands();
                     }
@@ -1000,6 +1000,7 @@ namespace System.Management.Automation
 
                         _context.ShellFunctionErrorOutputPipe = oldErrorOutputPipe;
                         _context.CurrentCommandProcessor = oldCurrentCommandProcessor;
+
                         // Destroy the local scope at this point if there is one...
                         if (_useLocalScope && CommandScope != null)
                         {

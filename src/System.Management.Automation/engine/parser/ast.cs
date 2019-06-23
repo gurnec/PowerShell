@@ -837,7 +837,8 @@ namespace System.Management.Automation.Language
         }
 
         /// <summary>
-        /// Construct a ScriptBlockAst that uses explicitly named begin/process/end blocks.
+        /// Initializes a new instance of the <see cref="ScriptBlockAst"/> class.
+        /// This construction uses explicitly named begin/process/end/dispose blocks.
         /// </summary>
         /// <param name="extent">The extent of the script block.</param>
         /// <param name="usingStatements">The list of using statments, may be null.</param>
@@ -852,15 +853,16 @@ namespace System.Management.Automation.Language
         /// If <paramref name="extent"/> is null.
         /// </exception>
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "param")]
-        public ScriptBlockAst(IScriptExtent extent,
-                              IEnumerable<UsingStatementAst> usingStatements,
-                              IEnumerable<AttributeAst> attributes,
-                              ParamBlockAst paramBlock,
-                              NamedBlockAst beginBlock,
-                              NamedBlockAst processBlock,
-                              NamedBlockAst endBlock,
-                              NamedBlockAst disposeBlock,
-                              NamedBlockAst dynamicParamBlock)
+        public ScriptBlockAst(
+            IScriptExtent extent,
+            IEnumerable<UsingStatementAst> usingStatements,
+            IEnumerable<AttributeAst> attributes,
+            ParamBlockAst paramBlock,
+            NamedBlockAst beginBlock,
+            NamedBlockAst processBlock,
+            NamedBlockAst endBlock,
+            NamedBlockAst disposeBlock,
+            NamedBlockAst dynamicParamBlock)
             : base(extent)
         {
             SetUsingStatements(usingStatements);
@@ -938,7 +940,8 @@ namespace System.Management.Automation.Language
         }
 
         /// <summary>
-        /// Construct a ScriptBlockAst that uses explicitly named begin/process/end blocks.
+        /// Initializes a new instance of the <see cref="ScriptBlockAst"/> class.
+        /// This construction uses explicitly named begin/process/end/dispose blocks.
         /// </summary>
         /// <param name="extent">The extent of the script block.</param>
         /// <param name="usingStatements">The list of using statments, may be null.</param>
@@ -952,14 +955,15 @@ namespace System.Management.Automation.Language
         /// If <paramref name="extent"/> is null.
         /// </exception>
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "param")]
-        public ScriptBlockAst(IScriptExtent extent,
-                              IEnumerable<UsingStatementAst> usingStatements,
-                              ParamBlockAst paramBlock,
-                              NamedBlockAst beginBlock,
-                              NamedBlockAst processBlock,
-                              NamedBlockAst endBlock,
-                              NamedBlockAst disposeBlock,
-                              NamedBlockAst dynamicParamBlock)
+        public ScriptBlockAst(
+            IScriptExtent extent,
+            IEnumerable<UsingStatementAst> usingStatements,
+            ParamBlockAst paramBlock,
+            NamedBlockAst beginBlock,
+            NamedBlockAst processBlock,
+            NamedBlockAst endBlock,
+            NamedBlockAst disposeBlock,
+            NamedBlockAst dynamicParamBlock)
             : this(extent, usingStatements, null, paramBlock, beginBlock, processBlock, endBlock, disposeBlock, dynamicParamBlock)
         {
         }
@@ -988,7 +992,8 @@ namespace System.Management.Automation.Language
         }
 
         /// <summary>
-        /// Construct a ScriptBlockAst that uses explicitly named begin/process/end blocks.
+        /// Initializes a new instance of the <see cref="ScriptBlockAst"/> class.
+        /// This construction uses explicitly named begin/process/end/dispose blocks.
         /// </summary>
         /// <param name="extent">The extent of the script block.</param>
         /// <param name="paramBlock">The ast for the param block, may be null.</param>
@@ -1001,13 +1006,14 @@ namespace System.Management.Automation.Language
         /// If <paramref name="extent"/> is null.
         /// </exception>
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "param")]
-        public ScriptBlockAst(IScriptExtent extent,
-                              ParamBlockAst paramBlock,
-                              NamedBlockAst beginBlock,
-                              NamedBlockAst processBlock,
-                              NamedBlockAst endBlock,
-                              NamedBlockAst disposeBlock,
-                              NamedBlockAst dynamicParamBlock)
+        public ScriptBlockAst(
+            IScriptExtent extent,
+            ParamBlockAst paramBlock,
+            NamedBlockAst beginBlock,
+            NamedBlockAst processBlock,
+            NamedBlockAst endBlock,
+            NamedBlockAst disposeBlock,
+            NamedBlockAst dynamicParamBlock)
             : this(extent, null, paramBlock, beginBlock, processBlock, endBlock, disposeBlock, dynamicParamBlock)
         {
         }
@@ -1217,7 +1223,7 @@ namespace System.Management.Automation.Language
         public NamedBlockAst EndBlock { get; private set; }
 
         /// <summary>
-        /// The ast representing the dispose block for a script block, or null if no dispose block was specified.
+        /// Gets the ast representing the dispose block for a script block, or null if no dispose block was specified.
         /// </summary>
         public NamedBlockAst DisposeBlock { get; private set; }
 
