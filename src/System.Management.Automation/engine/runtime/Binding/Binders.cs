@@ -1070,8 +1070,24 @@ namespace System.Management.Automation.Language
                 return Defer(target, args).WriteToDebugLog(this);
             }
 
-            if (target.Value is PSObject && (PSObject.Base(target.Value) != target.Value))
+            if (target.Value is PSObject pso && (PSObject.Base(target.Value) != target.Value))
             {
+                if (pso.ToStringFromDeserialization != null)
+                {
+                    // Should be in CachedReflectionInfo instead
+                    var toStringFromDeserialization = typeof(PSObject).GetProperty(
+                        nameof(PSObject.ToStringFromDeserialization),
+                        BindingFlags.Instance | BindingFlags.NonPublic);
+
+                    var toStringValue = Expression.Property(target.Expression, toStringFromDeserialization);
+
+                    var bindingRules = BindingRestrictions.GetExpressionRestriction(
+                        Expression.NotEqual(
+                            toStringValue,
+                            Expression.Constant(null, typeof(string))));
+
+                    return new DynamicMetaObject(toStringValue, bindingRules).WriteToDebugLog(this);
+                }
                 return this.DeferForPSObject(target, args[0]).WriteToDebugLog(this);
             }
 
