@@ -606,34 +606,36 @@ namespace System.Management.Automation
         /// </summary>
         internal virtual void DisposeScriptCommands()
         {
+            var oldOutputPipe = commandRuntime.OutputPipe;
+
             try
             {
+                commandRuntime.OutputPipe = new Pipe() { NullPipe = true };
+
                 if (this.Command is PSScriptCmdlet scriptCmdlet)
                 {
                     using (commandRuntime.AllowThisCommandToWrite(true))
+                    using (ParameterBinderBase.bindingTracer.TraceScope("CALLING Dispose"))
                     {
-                        using (ParameterBinderBase.bindingTracer.TraceScope(
-                            "CALLING Dispose"))
-                        {
-                            scriptCmdlet.Dispose();
-                        }
+                        scriptCmdlet.Dispose();
                     }
                 }
                 else if (this is DlrScriptCommandProcessor scriptProcessor)
                 {
                     using (commandRuntime.AllowThisCommandToWrite(true))
+                    using (ParameterBinderBase.bindingTracer.TraceScope("CALLING Dispose"))
                     {
-                        using (ParameterBinderBase.bindingTracer.TraceScope(
-                            "CALLING Dispose"))
-                        {
-                            scriptProcessor.InvokeDisposeBlock();
-                        }
+                        scriptProcessor.InvokeDisposeBlock();
                     }
                 }
             }
             catch (Exception e)
             {
                 throw ManageInvocationException(e);
+            }
+            finally
+            {
+                commandRuntime.OutputPipe = oldOutputPipe;
             }
         }
 
