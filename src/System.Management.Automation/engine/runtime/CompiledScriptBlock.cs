@@ -2508,6 +2508,8 @@ namespace System.Management.Automation
         /// </summary>
         public void Dispose()
         {
+            var oldOutputPipe = _functionContext._outputPipe;
+
             if (_disposed)
             {
                 return;
@@ -2517,6 +2519,7 @@ namespace System.Management.Automation
             {
                 if (_scriptBlock.HasDisposeBlock)
                 {
+                    _functionContext._outputPipe = new Pipe { NullPipe = true };
                     RunClause(
                         _runOptimized ? _scriptBlock.DisposeBlock : _scriptBlock.UnoptimizedDisposeBlock,
                         AutomationNull.Value,
@@ -2525,6 +2528,7 @@ namespace System.Management.Automation
             }
             finally
             {
+                _functionContext._outputPipe = oldOutputPipe;
                 this.DisposingEvent.SafeInvoke(this, EventArgs.Empty);
                 commandRuntime = null;
                 currentObjectInPipeline = null;

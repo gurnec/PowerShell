@@ -606,13 +606,9 @@ namespace System.Management.Automation
         /// </summary>
         internal virtual void DisposeScriptCommands()
         {
-            var oldOutputPipe = commandRuntime.OutputPipe;
-
             try
             {
-                commandRuntime.OutputPipe = new Pipe() { NullPipe = true };
-
-                if (this.Command is PSScriptCmdlet scriptCmdlet)
+                if (Command is PSScriptCmdlet scriptCmdlet)
                 {
                     using (commandRuntime.AllowThisCommandToWrite(true))
                     using (ParameterBinderBase.bindingTracer.TraceScope("CALLING Dispose"))
@@ -632,10 +628,6 @@ namespace System.Management.Automation
             catch (Exception e)
             {
                 throw ManageInvocationException(e);
-            }
-            finally
-            {
-                commandRuntime.OutputPipe = oldOutputPipe;
             }
         }
 

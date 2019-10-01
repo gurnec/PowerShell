@@ -628,18 +628,21 @@ namespace System.Management.Automation
 
         internal void InvokeDisposeBlock()
         {
+            var oldOutputPipe = _functionContext._outputPipe;
             try
             {
                 if (_scriptBlock.HasDisposeBlock)
                 {
                     var disposeBlock = _runOptimizedCode ? _scriptBlock.DisposeBlock : _scriptBlock.UnoptimizedDisposeBlock;
 
+                    _functionContext._outputPipe = new Pipe { NullPipe = true };
                     // run with no pipeline input or $input enumerator
                     RunClause(disposeBlock, AutomationNull.Value, AutomationNull.Value);
                 }
             }
             finally
             {
+                _functionContext._outputPipe = oldOutputPipe;
                 ScriptBlock.LogScriptBlockEnd(_scriptBlock, Context.CurrentRunspace.InstanceId);
             }
         }
