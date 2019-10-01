@@ -43,19 +43,20 @@ Describe 'Function Pipeline Behaviour' -Tag 'CI' {
                     process { "PROCESS $_" }
                     end { "END"; throw "This should not be reached." }
                 } |
-                Select-Object -First 3 | Should -Be @( "BEGIN", "PROCESS 1", "PROCESS 2" )
+                Select-Object -First 3 |
+                Should -Be @( "BEGIN", "PROCESS 1", "PROCESS 2" )
         }
 
         It 'still executes Dispose {} if the pipeline is halted' {
-            {
+            $Script = {
                 1..10 |
                     & {
                         process { $_ }
                         dispose { throw "Dispose block hit." }
-                } |
+                    } |
                     Select-Object -First 1
-            } |
-                Should -Throw -ExpectedMessage "Dispose block hit."
+            }
+            $Script | Should -Throw -ExpectedMessage "Dispose block hit."
         }
     }
 
