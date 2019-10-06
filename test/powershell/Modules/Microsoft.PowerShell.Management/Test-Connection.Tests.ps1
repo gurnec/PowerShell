@@ -105,15 +105,13 @@ Describe "Test-Connection" -Tags "CI" {
 
                 $result.Address | Should -BeExactly $realAddress
                 $result.Options.Ttl | Should -BeLessOrEqual 128
-
-                if ($isWindows) {
-                    $result.Options.DontFragment | Should -BeFalse
-                }
+                $result.Options.DontFragment | Should -BeFalse
             }
 
             It 'correctly passes DontFragment and MaxHops when specified by parameters' {
                 # In VSTS, address is 0.0.0.0
                 $result = Test-Connection $hostName -Count 1 -IPv4 -MaxHops 10 -DontFragment
+
                 $result.Address | Should -BeExactly $realAddress
                 $result.Options.Ttl | Should -Be 10
                 $result.Options.DontFragment | Should -BeTrue
