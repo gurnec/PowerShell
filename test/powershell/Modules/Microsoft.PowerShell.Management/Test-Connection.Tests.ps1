@@ -60,7 +60,7 @@ Describe "Test-Connection" -tags "CI" {
             }
 
             It 'calculates and stores the buffer size on the PingStatus result object' {
-                $successfulResult[0].BufferSize | Should -Be 32
+                $successfulResult.BufferSize | Should -Be 32
             }
         }
 
