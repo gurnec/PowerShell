@@ -3,7 +3,7 @@
 
 Import-Module HelpersCommon
 
-Describe "Test-Connection" -tags "CI" {
+Describe "Test-Connection" -Tags "CI" {
     BeforeAll {
         $hostName = [System.Net.Dns]::GetHostName()
         $targetName = "localhost"
@@ -97,38 +97,27 @@ Describe "Test-Connection" -tags "CI" {
             }
         }
 
-        # In VSTS, address is 0.0.0.0
-        It "Force IPv4 with implicit PingOptions" {
-            $result = Test-Connection $hostName -Count 1 -IPv4
+        Context 'With Explicit -IPv4 Switch' {
 
-            $result[0].Address | Should -BeExactly $realAddress
-            $result[0].Options.Ttl | Should -BeLessOrEqual 128
-            if ($isWindows) {
-                $result[0].Options.DontFragment | Should -BeFalse
+            It 'correctly specifies default TTL and DontFragment options' {
+                # In VSTS, address is 0.0.0.0
+                $result = Test-Connection $hostName -Count 1 -IPv4
+
+                $result.Address | Should -BeExactly $realAddress
+                $result.Options.Ttl | Should -BeLessOrEqual 128
+
+                if ($isWindows) {
+                    $result.Options.DontFragment | Should -BeFalse
+                }
             }
-        }
 
-        # In VSTS, address is 0.0.0.0
-        It "Force IPv4 with explicit PingOptions" {
-            $result1 = Test-Connection $hostName -Count 1 -IPv4 -MaxHops 10 -DontFragment
-
-            # explicitly go to google dns. this test will pass even if the destination is unreachable
-            # it's more about breaking out of the loop
-            $result2 = Test-Connection 8.8.8.8 -Count 1 -IPv4 -MaxHops 1 -DontFragment
-
-            $result1[0].Address | Should -BeExactly $realAddress
-            $result1[0].Options.Ttl | Should -BeLessOrEqual 128
-
-            if (!$isWindows) {
-                $result1[0].Options.DontFragment | Should -BeTrue
-                # Depending on the network configuration any of the following should be returned
-                $result2[0].Status | Should -BeIn "TtlExpired", "TimedOut", "Success"
-            }
-            else {
-                $result1[0].Options.DontFragment | Should -BeTrue
-                # We expect 'TtlExpired' but if a router don't reply we get `TimedOut`
-                # AzPipelines returns $null
-                $result2[0].Status | Should -BeIn "TtlExpired", "TimedOut", $null
+            It 'correctly passes DontFragment and MaxHops when specified by parameters' {
+                # In VSTS, address is 0.0.0.0
+                $result = Test-Connection $hostName -Count 1 -IPv4 -MaxHops 10 -DontFragment
+                $result.Address | Should -BeExactly $realAddress
+                $result.Options.Ttl | Should -Be 10
+                $result.Options.DontFragment | Should -BeTrue
+                $result.Status | Should -BeIn "TtlExpired", "TimedOut", "Success"
             }
         }
 
