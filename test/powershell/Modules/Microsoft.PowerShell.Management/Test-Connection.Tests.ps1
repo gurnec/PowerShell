@@ -119,12 +119,21 @@ Describe "Test-Connection" -Tags "CI" {
             }
         }
 
-        It "Force IPv6" -Pending {
+        It "Allows us to Force IPv6" {
             $result = Test-Connection $targetName -Count 1 -IPv6
 
-            $result[0].Address | Should -BeExactly $targetAddressIPv6
-            # We should check Null not Empty!
-            $result[0].Options | Should -Be $null
+            $result.Address | Should -BeExactly $targetAddressIPv6
+            $result.Options | Should -Not -BeNullOrEmpty
+        }
+
+        It 'can convert IPv6 addresses to IPv4 when required' {
+            $result = Test-Connection $targetAddressIPv6 -IPv4 -Count 1
+            $result.Address.AddressFamily | Should -BeExactly 'InterNetwork'
+        }
+
+        It 'can convert IPv4 addresses to IPv6 with -IPv6' {
+            $result = Test-Connection $targetAddress -IPv6 -Count 1
+            $result.Address.AddressFamily | Should -BeExactly 'InterNetworkV6'
         }
 
         It "MaxHops Should -Be greater 0" {
