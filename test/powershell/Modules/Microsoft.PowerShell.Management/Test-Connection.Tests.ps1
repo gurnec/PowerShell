@@ -131,7 +131,7 @@ Describe "Test-Connection" -Tags "CI" {
 
         It "MaxHops Should -Be greater 0" {
             { Test-Connection $targetName -MaxHops 0 } |
-                Should -Throw -ErrorId "System.ArgumentOutOfRangeException,Microsoft.PowerShell.Commands.TestConnectionCommand"
+                Should -Throw -ErrorId "ParameterArgumentValidationError,Microsoft.PowerShell.Commands.TestConnectionCommand"
             { Test-Connection $targetName -MaxHops -1 } |
                 Should -Throw -ErrorId "ParameterArgumentValidationError,Microsoft.PowerShell.Commands.TestConnectionCommand"
         }

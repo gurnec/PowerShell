@@ -122,7 +122,7 @@ namespace Microsoft.PowerShell.Commands
         [Parameter(ParameterSetName = DefaultPingParameterSet)]
         [Parameter(ParameterSetName = RepeatPingParameterSet)]
         [Parameter(ParameterSetName = TraceRouteParameterSet)]
-        [ValidateRange(0, sMaxHops)]
+        [ValidateRange(1, sMaxHops)]
         [Alias("Ttl", "TimeToLive", "Hops")]
         public int MaxHops { get; set; } = sMaxHops;
 
@@ -443,7 +443,20 @@ namespace Microsoft.PowerShell.Commands
 
             if (Quiet.IsPresent)
             {
-                WriteObject(currentHop <= sMaxHops);
+                WriteObject(currentHop <= MaxHops);
+            }
+            else if (currentHop > MaxHops)
+            {
+                var message = StringUtil.Format(
+                    TestConnectionResources.MaxHopsExceeded,
+                    resolvedTargetName,
+                    MaxHops);
+                var pingException = new PingException(message);
+                WriteError(new ErrorRecord(
+                    pingException,
+                    TestConnectionExceptionId,
+                    ErrorCategory.ConnectionError,
+                    targetAddress));
             }
             else if (currentHop > MaxHops)
             {
