@@ -62,6 +62,15 @@ Describe "Test-Connection" -tags "CI" {
             It 'calculates and stores the buffer size on the PingStatus result object' {
                 $successfulResult.BufferSize | Should -Be 32
             }
+
+            It "writes an error if the host cannot be found" {
+                { Test-Connection "fakeHost" -Count 1 -Quiet -ErrorAction Stop } |
+                    Should -Throw -ErrorId "TestConnectionException,Microsoft.PowerShell.Commands.TestConnectionCommand"
+
+                # Error code = 11001 - Host not found.
+                $ExpectedErrorCode = if ($isWindows) { 11001 } else { -131073 }
+                $Error[0].Exception.InnerException.ErrorCode | Should -Be -$ExpectedErrorCode
+            }
         }
 
         Context 'With -Count Parameter' {
@@ -85,19 +94,6 @@ Describe "Test-Connection" -tags "CI" {
 
             It 'returns $false for unreachable addresses' {
                 Test-Connection $UnreachableAddress -Count 1 -Quiet | Should -BeFalse
-            }
-        }
-
-        It "Ping fake host" {
-
-            { $result = Test-Connection "fakeHost" -Count 1 -Quiet -ErrorAction Stop } |
-                Should -Throw -ErrorId "TestConnectionException,Microsoft.PowerShell.Commands.TestConnectionCommand"
-            # Error code = 11001 - Host not found.
-            if (!$isWindows) {
-                $Error[0].Exception.InnerException.ErrorCode | Should -Be -131073
-            }
-            else {
-                $Error[0].Exception.InnerException.ErrorCode | Should -Be 11001
             }
         }
 
