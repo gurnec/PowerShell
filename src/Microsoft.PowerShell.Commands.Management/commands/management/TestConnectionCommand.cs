@@ -656,8 +656,24 @@ namespace Microsoft.PowerShell.Commands
                 if ((IPv4 && targetAddress.AddressFamily != AddressFamily.InterNetwork)
                     || (IPv6 && targetAddress.AddressFamily != AddressFamily.InterNetworkV6))
                 {
-                    hostEntry = Dns.GetHostEntry(targetAddress);
+                    hostEntry = Dns.GetHostEntry(targetNameOrAddress);
                     targetAddress = GetHostAddress(hostEntry);
+
+                    if (targetAddress == null)
+                    {
+                        string message = StringUtil.Format(
+                            TestConnectionResources.NoPingResult,
+                            resolvedTargetName,
+                            TestConnectionResources.TargetAddressAbsent);
+                        Exception pingException = new PingException(message, null);
+                        ErrorRecord errorRecord = new ErrorRecord(
+                            pingException,
+                            TestConnectionExceptionId,
+                            ErrorCategory.ResourceUnavailable,
+                            resolvedTargetName);
+                        WriteError(errorRecord);
+                        return false;
+                    }
                 }
 
                 if (ResolveDestination)
@@ -668,6 +684,10 @@ namespace Microsoft.PowerShell.Commands
                     }
 
                     resolvedTargetName = hostEntry.HostName;
+                }
+                else
+                {
+                    resolvedTargetName = targetAddress.ToString();
                 }
             }
             else
