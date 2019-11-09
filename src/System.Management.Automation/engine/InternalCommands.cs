@@ -91,8 +91,11 @@ namespace Microsoft.PowerShell.Commands
 
         #region ScriptBlockSet
 
-        private List<ScriptBlock> _scripts = new List<ScriptBlock>();
+        private readonly List<ScriptBlock> _scripts = new List<ScriptBlock>();
+        private readonly List<SteppableProcess> _processSteps = new List<SteppableProcess>();
 
+        private ScriptBlock _beginScript;
+        private bool _setBeginScript;
         /// <summary>
         /// Gets or sets the script block to apply in begin processing.
         /// </summary>
@@ -101,12 +104,13 @@ namespace Microsoft.PowerShell.Commands
         {
             get
             {
-                return null;
+                return _beginScript;
             }
 
             set
             {
-                _scripts.Insert(0, value);
+                _beginScript = value;
+                _setBeginScript = true;
             }
         }
 
@@ -163,27 +167,7 @@ namespace Microsoft.PowerShell.Commands
         [Parameter(ParameterSetName = ForEachObjectCommand.ScriptBlockSet, ValueFromRemainingArguments = true)]
         [AllowNull]
         [AllowEmptyCollection]
-        public ScriptBlock[] RemainingScripts
-        {
-            get
-            {
-                return null;
-            }
-
-            set
-            {
-                if (value == null)
-                {
-                    _scripts.Add(null);
-                }
-                else
-                {
-                    _scripts.AddRange(value);
-                }
-            }
-        }
-
-        private int _start, _end;
+        public ScriptBlock[] RemainingScripts { get; set; }
 
         #endregion ScriptBlockSet
 
@@ -911,6 +895,10 @@ namespace Microsoft.PowerShell.Commands
 
         private void ProcessScriptBlockParameterSet()
         {
+            foreach (var step in _processSteps)
+            {
+
+            }
             for (int i = _start; i < _end; i++)
             {
                 // Only execute scripts that aren't null. This isn't treated as an error
@@ -944,8 +932,8 @@ namespace Microsoft.PowerShell.Commands
             {
                 SwitchParameter whatIf = false;
                 SwitchParameter confirm = false;
-
                 object argument;
+
                 if (psBoundParameters.TryGetValue("whatif", out argument))
                 {
                     whatIf = (SwitchParameter)argument;
@@ -969,29 +957,34 @@ namespace Microsoft.PowerShell.Commands
                 }
             }
 
-            // Calculate the start and end indexes for the processRecord script blocks
-            _end = _scripts.Count;
-            _start = _scripts.Count > 1 ? 1 : 0;
-
-            // and set the end script if it wasn't explicitly set with a named parameter.
-            if (!_setEndScript)
+            // Set the begin and end scripts if they weren't explicitly set with a named parameter.
+            if (!_setBeginScript && _scripts.Count > 1)
             {
-                if (_scripts.Count > 2)
-                {
-                    _end = _scripts.Count - 1;
-                    _endScript = _scripts[_end];
-                }
+                _beginScript = _scripts[0];
+                _setBeginScript = true;
+
+                // Remove the begin script from the list
+                _scripts.RemoveAt(0);
             }
 
-            // only process the start script if there is more than one script...
-            if (_end < 2)
-                return;
+            if (!_setEndScript && _scripts.Count > 1)
+            {
+                _endScript = _scripts[_scripts.Count - 1];
+                _setEndScript = true;
 
-            if (_scripts[0] == null)
+                // Remove the end script from the main selection of scripts
+                _scripts.RemoveAt(_scripts.Count - 1);
+            }
+
+            _processSteps.AddRange(_scripts.ConvertAll(script => script.GetSteppableProcess(this)));
+
+            if (!_setBeginScript)
+            {
                 return;
+            }
 
             var emptyArray = Array.Empty<object>();
-            _scripts[0].InvokeUsingCmdlet(
+            _beginScript?.InvokeUsingCmdlet(
                 contextCmdlet: this,
                 useLocalScope: false,
                 errorHandlingBehavior: ScriptBlock.ErrorHandlingBehavior.WriteToCurrentErrorPipe,
