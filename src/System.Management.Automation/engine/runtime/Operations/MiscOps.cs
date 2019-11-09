@@ -751,6 +751,102 @@ namespace System.Management.Automation
             return new SteppablePipeline(context, pipelineProcessor);
         }
 
+        internal static SteppableProcess GetSteppableProcess(
+            PipelineAst pipelineAst,
+            CommandOrigin commandOrigin,
+            ScriptBlock scriptBlock,
+            InternalCommand sourceCommand)
+        {
+            var pipelineProcessor = new PipelineProcessor();
+            var commandTuples = new List<(CommandAst command, List<CommandParameterInternal> parameters, List<CommandRedirection> redirects)>();
+
+            ExecutionContext context = sourceCommand?.Context ?? LocalPipeline.GetExecutionContextFromTLS();
+            if (context == null)
+            {
+                // If ExecutionContext from TLS is null then we are not in powershell engine thread.
+                string scriptText = scriptBlock.ToString();
+                scriptText = ErrorCategoryInfo.Ellipsize(CultureInfo.CurrentUICulture, scriptText);
+
+                PSInvalidOperationException error = PSTraceSource.NewInvalidOperationException(
+                    ParserStrings.GetSteppablePipelineFromWrongThread,
+                    scriptText);
+
+                error.SetErrorId("GetSteppableProcessFromWrongThread");
+                throw error;
+            }
+
+            // GetSteppableProcess() is called on an arbitrary script block with the intention
+            // of invoking it. So the trustworthiness is defined by the trustworthiness of the
+            // script block's language mode.
+            bool isTrusted = scriptBlock.LanguageMode == PSLanguageMode.FullLanguage;
+
+            foreach (var commandAst in pipelineAst.PipelineElements.Cast<CommandAst>())
+            {
+                var commandParameters = new List<CommandParameterInternal>();
+                foreach (var commandElement in commandAst.CommandElements)
+                {
+                    if (commandElement is CommandParameterAst commandParameterAst)
+                    {
+                        commandParameters.Add(GetCommandParameter(commandParameterAst, isTrusted, context));
+                        continue;
+                    }
+
+                    var exprAst = (ExpressionAst)commandElement;
+                    var argument = Compiler.GetExpressionValue(exprAst, isTrusted, context);
+                    var splatting = (exprAst is VariableExpressionAst ast && ast.Splatted);
+                    commandParameters.Add(CommandParameterInternal.CreateArgument(argument, exprAst, splatting));
+                }
+
+                var redirections = new List<CommandRedirection>();
+                foreach (var redirection in commandAst.Redirections)
+                {
+                    redirections.Add(GetCommandRedirection(redirection, isTrusted, context));
+                }
+
+                commandTuples.Add((commandAst, commandParameters, redirections));
+            }
+
+            foreach (var (command, parameters, redirects) in commandTuples)
+            {
+                var commandProcessor = AddCommand(
+                    pipelineProcessor,
+                    parameters.ToArray(),
+                    command,
+                    redirects.ToArray(),
+                    context);
+                commandProcessor.Command.CommandOriginInternal = commandOrigin;
+                commandProcessor.CommandScope.ScopeOrigin = commandOrigin;
+                commandProcessor.Command.MyInvocation.CommandOrigin = commandOrigin;
+
+                // For nicer error reporting, we want to make it look like errors in the steppable pipeline point back to
+                // the caller of the proxy.  We don't want errors pointing to the script block created in the proxy.
+                // Here we assume (in a safe way) that GetSteppableProcess is called from script.  If that isn't the case,
+                // we won't crash, but the error reporting might be a little misleading.
+                var callStack = context.Debugger.GetCallStack().ToArray();
+                if (callStack.Length > 0 && Regex.IsMatch(callStack[0].Position.Text, "GetSteppableProcess", RegexOptions.IgnoreCase))
+                {
+                    var myInvocation = commandProcessor.Command.MyInvocation;
+                    myInvocation.InvocationName = callStack[0].InvocationInfo.InvocationName;
+                    if (callStack.Length > 1)
+                    {
+                        var displayPosition = callStack[1].Position;
+                        if (displayPosition != null && displayPosition != PositionUtilities.EmptyExtent)
+                        {
+                            myInvocation.DisplayScriptPosition = displayPosition;
+                        }
+                    }
+                }
+
+                // Set the data stream merge properties based on ExecutionContext.
+                if (context.CurrentCommandProcessor != null && context.CurrentCommandProcessor.CommandRuntime != null)
+                {
+                    commandProcessor.CommandRuntime.SetMergeFromRuntime(context.CurrentCommandProcessor.CommandRuntime);
+                }
+            }
+
+            return new SteppableProcess(context, pipelineProcessor, sourceCommand);
+        }
+
         private static CommandParameterInternal GetCommandParameter(CommandParameterAst commandParameterAst, bool isTrusted, ExecutionContext context)
         {
             var argumentAst = commandParameterAst.Argument;

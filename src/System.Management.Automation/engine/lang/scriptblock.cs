@@ -387,6 +387,18 @@ namespace System.Management.Automation
             => GetSteppablePipelineImpl(commandOrigin, args);
 
         /// <summary>
+        /// Get a steppable pipeline process object.
+        /// </summary>
+        /// <returns>A steppable pipeline process object.</returns>
+        [SuppressMessage(
+            "Microsoft.Naming",
+            "CA1704:IdentifiersShouldBeSpelledCorrectly",
+            MessageId = "Steppable",
+            Justification = "Review this during API naming")]
+        public SteppableProcess GetSteppableProcess(InternalCommand sourceCommand = null)
+            => GetSteppableProcessImpl(CommandOrigin.Internal, sourceCommand);
+
+        /// <summary>
         /// Execute this node with the specified arguments. The arguments show
         /// up in the script as $args with $_ being the first argument.
         /// </summary>
@@ -1323,6 +1335,174 @@ namespace System.Management.Automation
 
         #endregion IDispose
     }
+
+    /// <summary>
+    /// A steppable pipeline wrapper object for process-step-only pipelines,
+    /// such as those used for ForEach-Object
+    /// </summary>
+    [SuppressMessage(
+        "Microsoft.Naming",
+        "CA1704:IdentifiersShouldBeSpelledCorrectly",
+        MessageId = "Steppable",
+        Justification = "Consider Name change during API review")]
+    public sealed class SteppableProcess : IDisposable
+    {
+        internal SteppableProcess(
+            ExecutionContext context,
+            PipelineProcessor pipeline,
+            InternalCommand command = null)
+        {
+            if (command == null || command.MyInvocation == null)
+            {
+                throw new ArgumentNullException(nameof(command));
+            }
+
+            _pipeline = pipeline ?? throw new ArgumentNullException(nameof(pipeline));
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _expectInput = command?.MyInvocation.ExpectingInput ?? true;
+
+            try
+            {
+                _pipeline.ExecutionScope = _context.EngineSessionState.CurrentScope;
+                _context.PushPipelineProcessor(_pipeline);
+
+                // Start the pipeline.
+                // If the command calling this pipeline is not expecting input (as
+                // indicated by its position in the pipeline), then neither should we.
+                if (command?.commandRuntime is MshCommandRuntime commandRuntime)
+                {
+                    if (commandRuntime.OutputPipe != null)
+                    {
+                        _pipeline.LinkPipelineSuccessOutput(commandRuntime.OutputPipe);
+                    }
+
+                    if (commandRuntime.ErrorOutputPipe != null)
+                    {
+                        _pipeline.LinkPipelineErrorOutput(commandRuntime.ErrorOutputPipe);
+                    }
+                }
+
+                // Test without this as it is labelled as optional
+                // _pipeline.StartStepping(_expectInput);
+            }
+            finally
+            {
+                _context.PopPipelineProcessor(true);
+            }
+        }
+
+        private readonly PipelineProcessor _pipeline;
+        private readonly ExecutionContext _context;
+        private readonly bool _expectInput;
+
+        /// <summary>
+        /// Process a single input object.
+        /// </summary>
+        /// <param name="input">The object to process.</param>
+        /// <returns>A collection of 0 or more result objects.</returns>
+        public Array Process(object input)
+        {
+            try
+            {
+                _context.PushPipelineProcessor(_pipeline);
+                if (_expectInput)
+                {
+                    return _pipeline.Step(input);
+                }
+                else
+                {
+                    return _pipeline.Step(AutomationNull.Value);
+                }
+            }
+            finally
+            {
+                _context.PopPipelineProcessor(true);
+            }
+        }
+
+        /// <summary>
+        /// Process a single PSObject. This overload exists to deal with the fact
+        /// that the PowerShell runtime will PSBase an object before passing it to
+        /// a .NET API call with argument type object.
+        /// </summary>
+        /// <param name="input">The input object to process.</param>
+        public Array Process(PSObject input)
+        {
+            try
+            {
+                _context.PushPipelineProcessor(_pipeline);
+                if (_expectInput)
+                {
+                    return _pipeline.Step(input);
+                }
+                else
+                {
+                    return _pipeline.Step(AutomationNull.Value);
+                }
+            }
+            finally
+            {
+                _context.PopPipelineProcessor(true);
+            }
+        }
+
+        /// <summary>
+        /// Process with no input. This is used in the case where
+        /// the host command is not expecting input.
+        /// </summary>
+        public Array Process()
+        {
+            try
+            {
+                _context.PushPipelineProcessor(_pipeline);
+                return _pipeline.Step(AutomationNull.Value);
+            }
+            finally
+            {
+                _context.PopPipelineProcessor(true);
+            }
+        }
+
+        #region IDisposable
+
+        private bool _disposed;
+
+        /// <summary>
+        /// IDisposable implementation
+        /// When this object is disposed, the contained pipeline should also be disposed.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                _pipeline.Dispose();
+            }
+
+            _disposed = true;
+        }
+
+        /// <summary>
+        /// Finalizer for class SteppableProcess.
+        /// </summary>
+        ~SteppableProcess()
+        {
+            Dispose(false);
+        }
+
+        #endregion
+    }
+
 
     /// <summary>
     /// Defines the exception thrown when conversion from ScriptBlock to PowerShell is forbidden

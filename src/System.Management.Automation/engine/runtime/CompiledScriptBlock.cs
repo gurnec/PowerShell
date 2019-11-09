@@ -719,7 +719,6 @@ namespace System.Management.Automation
                 args);
         }
 
-
         internal SteppablePipeline GetSteppablePipelineImpl(CommandOrigin commandOrigin, object[] args)
         {
             var pipelineAst = GetSimplePipeline(
@@ -732,6 +731,20 @@ namespace System.Management.Automation
             }
 
             return PipelineOps.GetSteppablePipeline(pipelineAst, commandOrigin, this, args);
+        }
+
+        internal SteppableProcess GetSteppableProcessImpl(CommandOrigin commandOrigin, InternalCommand sourceCommand)
+        {
+            var pipelineAst = GetSimplePipeline(
+                resourceString => { throw PSTraceSource.NewInvalidOperationException(resourceString); });
+            Diagnostics.Assert(pipelineAst != null, "This should be checked by GetSimplePipeline");
+
+            if (!(pipelineAst.PipelineElements[0] is CommandAst))
+            {
+                throw PSTraceSource.NewInvalidOperationException(AutomationExceptions.CantConvertEmptyPipeline);
+            }
+
+            return PipelineOps.GetSteppableProcess(pipelineAst, commandOrigin, this, sourceCommand);
         }
 
         private PipelineAst GetSimplePipeline(Func<string, PipelineAst> errorHandler)
