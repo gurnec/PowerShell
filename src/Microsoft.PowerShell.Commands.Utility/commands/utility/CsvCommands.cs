@@ -1034,7 +1034,6 @@ namespace Microsoft.PowerShell.Commands
                 // If value is null, assume property is not present and skip it.
                 if (value != null)
                 {
-
                     if (_quoteFields != null)
                     {
                         if (_quoteFields.TryGetValue(propertyName, out _))
