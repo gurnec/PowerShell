@@ -908,7 +908,7 @@ namespace Microsoft.PowerShell.Commands
             }
             else
             {
-                // serialize only Extended and Adapted properties..
+                // serialize only Extended and Adapted properties.
                 PSMemberInfoCollection<PSPropertyInfo> srcPropertiesToSearch =
                     new PSMemberInfoIntegratingCollection<PSPropertyInfo>(
                         source,
