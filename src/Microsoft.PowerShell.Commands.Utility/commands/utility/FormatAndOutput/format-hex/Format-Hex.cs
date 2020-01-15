@@ -409,12 +409,20 @@ namespace Microsoft.PowerShell.Commands
                     _lastInputType = baseType;
                 }
 
+                int elementSize;
                 if (baseType == typeof(bool))
                 {
                     isBool = true;
+
+                    // Special case boolean value sizes; .NET often pads bool values to 4 bytes,
+                    // but it is not useful to display this padding here.
+                    elementSize = 1;
+                }
+                else
+                {
+                    elementSize = Marshal.SizeOf(baseType);
                 }
 
-                var elementSize = Marshal.SizeOf(baseType);
                 result = new byte[elementSize * elements];
                 if (!isArray)
                 {
@@ -424,7 +432,11 @@ namespace Microsoft.PowerShell.Commands
                 int index = 0;
                 foreach (dynamic obj in (Array)inputObject)
                 {
-                    if (elementSize == 1)
+                    if (isBool)
+                    {
+                        result[index] = (byte)(obj ? 1 : 0);
+                    }
+                    else if (elementSize == 1)
                     {
                         result[index] = (byte)obj;
                     }
@@ -434,11 +446,6 @@ namespace Microsoft.PowerShell.Commands
                         if (isEnum)
                         {
                             toBytes = Convert.ChangeType(obj, baseType);
-                        }
-                        else if (isBool)
-                        {
-                            // bool is 1 byte apparently
-                            toBytes = Convert.ToByte(obj);
                         }
                         else
                         {
