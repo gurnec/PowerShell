@@ -1311,9 +1311,15 @@ namespace System.Management.Automation
         /// <param name="typeCode">Type code to check.</param>
         /// <returns>True if type is integer or floating point, false otherwise.</returns>
         internal static bool IsNumeric(TypeCode typeCode)
-        {
-            return (s_typeCodeTraits[(int)typeCode] & TypeCodeTraits.Numeric) != 0;
-        }
+            => (s_typeCodeTraits[(int)typeCode] & TypeCodeTraits.Numeric) != 0;
+
+        /// <summary>
+        /// Verifies if <paramref name="type" /> is an integer or floating point number.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        internal static bool IsNumeric(Type type)
+            => IsNumeric(GetTypeCode(type)) || type == typeof(System.Numerics.BigInteger);
 
         /// <summary>
         /// Verifies if type is a CIM intrinsic type.
