@@ -4385,7 +4385,8 @@ namespace System.Management.Automation
             typeof(Int16), typeof(Int32), typeof(Int64),
             typeof(UInt16), typeof(UInt32), typeof(UInt64),
             typeof(sbyte), typeof(byte),
-            typeof(Single), typeof(double), typeof(decimal)
+            typeof(Single), typeof(double), typeof(decimal),
+            typeof(System.Numerics.BigInteger)
         };
 
         private static Type[] s_integerTypes = new Type[] {
