@@ -1210,7 +1210,7 @@ namespace System.Management.Automation.Language
                             if (!LanguagePrimitives.TryConvertTo(constValue, underlyingType, out value))
                             {
                                 if (constValue != null &&
-                                    LanguagePrimitives.IsNumeric(LanguagePrimitives.GetTypeCode(constValue.GetType())))
+                                    LanguagePrimitives.IsNumeric(constValue.GetType()))
                                 {
                                     _parser.ReportError(
                                         enumerator.InitialValue.Extent,

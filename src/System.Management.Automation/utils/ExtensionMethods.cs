@@ -90,14 +90,10 @@ namespace System.Management.Automation
         }
 
         internal static bool IsNumeric(this Type type)
-        {
-            return LanguagePrimitives.IsNumeric(LanguagePrimitives.GetTypeCode(type));
-        }
+            => LanguagePrimitives.IsNumeric(type);
 
         internal static bool IsNumericOrPrimitive(this Type type)
-        {
-            return type.IsPrimitive || LanguagePrimitives.IsNumeric(LanguagePrimitives.GetTypeCode(type));
-        }
+            => type.IsPrimitive || LanguagePrimitives.IsNumeric(type);
 
         internal static bool IsSafePrimitive(this Type type)
         {

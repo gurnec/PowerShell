@@ -646,7 +646,7 @@ namespace System.Management.Automation
                     {
                         var constantExprAst = ast as ConstantExpressionAst;
                         object argument;
-                        if (constantExprAst != null && LanguagePrimitives.IsNumeric(LanguagePrimitives.GetTypeCode(constantExprAst.StaticType)))
+                        if (constantExprAst != null && LanguagePrimitives.IsNumeric(constantExprAst.StaticType))
                         {
                             var commandArgumentText = constantExprAst.Extent.Text;
                             argument = constantExprAst.Value;

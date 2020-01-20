@@ -86,7 +86,7 @@ namespace Microsoft.PowerShell.Cmdletization.Cim
                 return null;
             }
 
-            if (LanguagePrimitives.IsNumeric(typeCode))
+            if (LanguagePrimitives.IsNumeric(type))
             {
                 return (string)LanguagePrimitives.ConvertTo(o, typeof(string), CultureInfo.InvariantCulture);
             }

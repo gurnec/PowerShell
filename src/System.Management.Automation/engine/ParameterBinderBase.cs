@@ -1128,7 +1128,7 @@ namespace System.Management.Automation
                                         result = new SwitchParameter(false);
                                 }
                             }
-                            else if (LanguagePrimitives.IsNumeric(boType.GetTypeCode()))
+                            else if (LanguagePrimitives.IsNumeric(boType))
                             {
                                 double currentValueAsDouble = (double)LanguagePrimitives.ConvertTo(
                                                                         currentValue, typeof(double), CultureInfo.InvariantCulture);
@@ -2063,4 +2063,3 @@ namespace System.Management.Automation
         }
     }
 }
-

@@ -1873,7 +1873,7 @@ namespace System.Management.Automation.Language
                 return true;
             }
 
-            if (LanguagePrimitives.IsNumeric(LanguagePrimitives.GetTypeCode(type)) && !type.IsEnum)
+            if (LanguagePrimitives.IsNumeric(type) && !type.IsEnum)
             {
                 value = 0;
                 return true;
@@ -4171,7 +4171,7 @@ namespace System.Management.Automation.Language
         private Expression GetCommandArgumentExpression(CommandElementAst element)
         {
             var constElement = element as ConstantExpressionAst;
-            if (constElement != null && LanguagePrimitives.IsNumeric(LanguagePrimitives.GetTypeCode(constElement.StaticType)))
+            if (constElement != null && LanguagePrimitives.IsNumeric(constElement.StaticType))
             {
                 var commandArgumentText = constElement.Extent.Text;
                 if (!commandArgumentText.Equals(constElement.Value.ToString(), StringComparison.Ordinal))

@@ -149,7 +149,7 @@ namespace Microsoft.PowerShell.Commands.Internal.Format
             // if so just return its value
             if (x is PSObject &&
                 (LanguagePrimitives.IsBoolOrSwitchParameterType((((PSObject)x).BaseObject).GetType()) ||
-                LanguagePrimitives.IsNumeric(((((PSObject)x).BaseObject).GetType()).GetTypeCode()) ||
+                LanguagePrimitives.IsNumeric(((PSObject)x).BaseObject.GetType()) ||
                 LanguagePrimitives.IsNull(x)))
             {
                 objName = x.ToString();
@@ -626,4 +626,3 @@ namespace Microsoft.PowerShell.Commands.Internal.Format
         private Dictionary<ExpressionToken, PSPropertyExpression> _expressionCache;
     }
 }
-

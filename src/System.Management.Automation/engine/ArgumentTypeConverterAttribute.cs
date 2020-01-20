@@ -184,7 +184,7 @@ namespace System.Management.Automation
                 if (resultType == typeof(PSObject))
                     resultType = ((PSObject)value).BaseObject.GetType();
 
-                if (!(LanguagePrimitives.IsNumeric(resultType.GetTypeCode()) ||
+                if (!(LanguagePrimitives.IsNumeric(resultType) ||
                       LanguagePrimitives.IsBoolOrSwitchParameterType(resultType)))
                 {
                     ThrowPSInvalidBooleanArgumentCastException(resultType, boolType);
@@ -210,4 +210,3 @@ namespace System.Management.Automation
         }
     }
 }
-

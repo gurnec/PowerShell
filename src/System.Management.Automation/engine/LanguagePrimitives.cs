@@ -14,6 +14,7 @@ using System.Linq.Expressions;
 using System.Management.Automation.Internal;
 using System.Management.Automation.Language;
 using System.Management.Automation.Runspaces;
+using System.Numerics;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
@@ -1003,7 +1004,7 @@ namespace System.Management.Automation
                 return IsTrue((string)obj);
             }
 
-            if (LanguagePrimitives.IsNumeric(LanguagePrimitives.GetTypeCode(objType)))
+            if (IsNumeric(objType))
             {
                 IConversionData data = GetConversionData(objType, typeof(bool)) ??
                                        CacheConversion(objType, typeof(bool), CreateNumericToBoolConverter(objType), ConversionRank.Language);
@@ -1319,7 +1320,7 @@ namespace System.Management.Automation
         /// <param name="type"></param>
         /// <returns></returns>
         internal static bool IsNumeric(Type type)
-            => IsNumeric(GetTypeCode(type)) || type == typeof(System.Numerics.BigInteger);
+            => IsNumeric(GetTypeCode(type)) || type == typeof(BigInteger);
 
         /// <summary>
         /// Verifies if type is a CIM intrinsic type.
@@ -2917,7 +2918,7 @@ namespace System.Management.Automation
         {
             var strToConvert = valueToConvert as string;
             Diagnostics.Assert(strToConvert != null, "Value to convert must be a string");
-            Diagnostics.Assert(IsNumeric(GetTypeCode(resultType)), "Result type must be numeric");
+            Diagnostics.Assert(IsNumeric(resultType), "Result type must be numeric");
 
             if (strToConvert.Length == 0)
             {
@@ -3239,7 +3240,7 @@ namespace System.Management.Automation
 
         private static PSConverter<bool> CreateNumericToBoolConverter(Type fromType)
         {
-            Diagnostics.Assert(LanguagePrimitives.IsNumeric(fromType.GetTypeCode()), "Can only convert numeric types");
+            Diagnostics.Assert(IsNumeric(fromType), "Can only convert numeric types");
 
             var valueToConvert = Expression.Parameter(typeof(object));
             var parameters = new ParameterExpression[]
@@ -4391,7 +4392,8 @@ namespace System.Management.Automation
             typeof(Int16), typeof(Int32), typeof(Int64),
             typeof(UInt16), typeof(UInt32), typeof(UInt64),
             typeof(sbyte), typeof(byte),
-            typeof(Single), typeof(double), typeof(decimal)
+            typeof(Single), typeof(double), typeof(decimal),
+            typeof(BigInteger)
         };
 
         private static Type[] s_integerTypes = new Type[] {
@@ -4918,7 +4920,7 @@ namespace System.Management.Automation
 
             if (toType == typeof(string))
             {
-                Dbg.Assert(!LanguagePrimitives.IsNumeric(LanguagePrimitives.GetTypeCode(fromType)) || fromType.IsEnum,
+                Dbg.Assert(!IsNumeric(fromType) || fromType.IsEnum,
                     "Number to string should be cached on initialization of cache table");
                 return CacheConversion<string>(fromType, toType, LanguagePrimitives.ConvertNonNumericToString, ConversionRank.ToString);
             }
@@ -5639,7 +5641,7 @@ namespace System.Management.Automation
                         {
                             if (typeof(IConvertible).IsAssignableFrom(fromType))
                             {
-                                if (LanguagePrimitives.IsNumeric(GetTypeCode(fromType)) && !fromType.IsEnum)
+                                if (IsNumeric(fromType) && !fromType.IsEnum)
                                 {
                                     if (!toType.IsArray)
                                     {
