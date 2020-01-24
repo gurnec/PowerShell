@@ -3344,6 +3344,33 @@ namespace System.Management.Automation
             }
         }
 
+        private static string ConvertBigIntegerToString(object valueToConvert,
+                                                        Type resultType,
+                                                        bool recursion,
+                                                        PSObject originalValueToConvert,
+                                                        IFormatProvider formatProvider,
+                                                        TypeTable backupTable)
+        {
+            if (originalValueToConvert != null && originalValueToConvert.TokenText != null)
+            {
+                return originalValueToConvert.TokenText;
+            }
+
+            ExecutionContext ecFromTLS = LocalPipeline.GetExecutionContextFromTLS();
+            try
+            {
+                typeConversion.WriteLine("Converting BigInteger to string.");
+                return PSObject.ToStringParser(ecFromTLS, valueToConvert, formatProvider);
+            }
+            catch (ExtendedTypeSystemException e)
+            {
+                typeConversion.WriteLine("Converting BigInteger to string Exception: \"{0}\".", e.Message);
+                throw new PSInvalidCastException("InvalidCastFromBigIntegerToString", e,
+                    ExtendedTypeSystem.InvalidCastExceptionWithInnerException,
+                    valueToConvert.ToString(), resultType.ToString(), e.Message);
+            }
+        }
+
         private static Hashtable ConvertIDictionaryToHashtable(object valueToConvert,
                                                                Type resultType,
                                                                bool recursion,
@@ -4385,8 +4412,7 @@ namespace System.Management.Automation
             typeof(Int16), typeof(Int32), typeof(Int64),
             typeof(UInt16), typeof(UInt32), typeof(UInt64),
             typeof(sbyte), typeof(byte),
-            typeof(Single), typeof(double), typeof(decimal),
-            typeof(System.Numerics.BigInteger)
+            typeof(Single), typeof(double), typeof(decimal)
         };
 
         private static Type[] s_integerTypes = new Type[] {
@@ -4420,6 +4446,7 @@ namespace System.Management.Automation
                     CacheConversion<object>(type, typeofChar, LanguagePrimitives.ConvertIConvertible, ConversionRank.NumericString);
                     CacheConversion<object>(typeofNull, type, LanguagePrimitives.ConvertNullToNumeric, ConversionRank.NullToValue);
                 }
+                CacheConversion<string>(typeof(System.Numerics.BigInteger), typeofString, LanguagePrimitives.ConvertBigIntegerToString, ConversionRank.NumericString);
 
                 CacheConversion<bool>(typeof(Int16), typeofBool, ConvertInt16ToBool, ConversionRank.Language);
                 CacheConversion<bool>(typeof(Int32), typeofBool, ConvertInt32ToBool, ConversionRank.Language);
