@@ -14,6 +14,7 @@ using System.Linq.Expressions;
 using System.Management.Automation.Internal;
 using System.Management.Automation.Language;
 using System.Management.Automation.Runspaces;
+using System.Numerics;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
@@ -2908,11 +2909,20 @@ namespace System.Management.Automation
         {
             var strToConvert = valueToConvert as string;
             Diagnostics.Assert(strToConvert != null, "Value to convert must be a string");
-            Diagnostics.Assert(IsNumeric(GetTypeCode(resultType)), "Result type must be numeric");
+            Diagnostics.Assert(
+                IsNumeric(GetTypeCode(resultType)) || resultType == typeof(BigInteger),
+                "Result type must be numeric");
 
             if (strToConvert.Length == 0)
             {
                 typeConversion.WriteLine("Returning numeric zero.");
+
+                // BigInteger is not IConvertible and will throw from ChangeType.
+                if (resultType == typeof(BigInteger))
+                {
+                    return new BigInteger(0);
+                }
+
                 // This is not wrapped in a try/catch because it can't fail.
                 return System.Convert.ChangeType(0, resultType, CultureInfo.InvariantCulture);
             }
@@ -3226,6 +3236,24 @@ namespace System.Management.Automation
             return ((Decimal)valueToConvert) != default(Decimal);
         }
 
+        private static bool ConvertBigIntegerToBool(
+            object valueToConvert,
+            Type resultType,
+            bool recursion,
+            PSObject originalValueToConvert,
+            IFormatProvider formatProvider,
+            TypeTable backupTable)
+                => ((BigInteger)valueToConvert) != default(BigInteger);
+
+        private static object ConvertBoolToBigInteger(
+            object valueToConvert,
+            Type resultType,
+            bool recursion,
+            PSObject originalValueToConvert,
+            IFormatProvider formatProvider,
+            TypeTable backupTable)
+                => (bool)valueToConvert ? new BigInteger(1) : new BigInteger(0);
+
         private static PSConverter<bool> CreateNumericToBoolConverter(Type fromType)
         {
             Diagnostics.Assert(LanguagePrimitives.IsNumeric(fromType.GetTypeCode()), "Can only convert numeric types");
@@ -3305,6 +3333,11 @@ namespace System.Management.Automation
                 if (valueToConvert is float sgl)
                 {
                     return sgl.ToString(SinglePrecision, numberFormat);
+                }
+
+                if (valueToConvert is BigInteger b)
+                {
+                    return b.ToString(numberFormat);
                 }
 
                 return (string)Convert.ChangeType(valueToConvert, resultType, CultureInfo.InvariantCulture.NumberFormat);
@@ -4140,6 +4173,13 @@ namespace System.Management.Automation
                                                    TypeTable backupTable)
         {
             typeConversion.WriteLine("Converting null to zero.");
+
+            // Handle BigInteger first, as it is not IConvertible
+            if (resultType == typeof(BigInteger))
+            {
+                return new BigInteger(0);
+            }
+
             // If the destination type is numeric, convert 0 to resultType
             return System.Convert.ChangeType(0, resultType, CultureInfo.InvariantCulture);
         }
@@ -4380,7 +4420,8 @@ namespace System.Management.Automation
             typeof(Int16), typeof(Int32), typeof(Int64),
             typeof(UInt16), typeof(UInt32), typeof(UInt64),
             typeof(sbyte), typeof(byte),
-            typeof(Single), typeof(double), typeof(decimal)
+            typeof(Single), typeof(double), typeof(decimal),
+            typeof(System.Numerics.BigInteger)
         };
 
         private static Type[] s_integerTypes = new Type[] {
@@ -4415,6 +4456,10 @@ namespace System.Management.Automation
                     CacheConversion<object>(typeofNull, type, LanguagePrimitives.ConvertNullToNumeric, ConversionRank.NullToValue);
                 }
 
+                CacheConversion<string>(typeof(BigInteger), typeofString, ConvertNumericToString, ConversionRank.NumericString);
+                CacheConversion<object>(typeofNull, typeof(BigInteger), ConvertNullToNumeric, ConversionRank.NullToValue);
+                CacheConversion<object>(typeofBool, typeof(BigInteger), ConvertBoolToBigInteger, ConversionRank.Language);
+
                 CacheConversion<bool>(typeof(Int16), typeofBool, ConvertInt16ToBool, ConversionRank.Language);
                 CacheConversion<bool>(typeof(Int32), typeofBool, ConvertInt32ToBool, ConversionRank.Language);
                 CacheConversion<bool>(typeof(Int64), typeofBool, ConvertInt64ToBool, ConversionRank.Language);
@@ -4426,6 +4471,7 @@ namespace System.Management.Automation
                 CacheConversion<bool>(typeof(Single), typeofBool, ConvertSingleToBool, ConversionRank.Language);
                 CacheConversion<bool>(typeof(double), typeofBool, ConvertDoubleToBool, ConversionRank.Language);
                 CacheConversion<bool>(typeof(decimal), typeofBool, ConvertDecimalToBool, ConversionRank.Language);
+                CacheConversion<bool>(typeof(BigInteger), typeofBool, ConvertBigIntegerToBool, ConversionRank.Language);
 
                 for (int i = 0; i < LanguagePrimitives.s_unsignedIntegerTypes.Length; i++)
                 {
@@ -4479,6 +4525,8 @@ namespace System.Management.Automation
                         CacheConversion<object>(realType, integerType, LanguagePrimitives.ConvertNumeric, ConversionRank.NumericExplicit);
                     }
                 }
+
+                CacheConversion<object>(typeofString, typeof(BigInteger), ConvertStringToInteger, ConversionRank.NumericString);
 
                 CacheConversion<object>(typeofFloat, typeofDouble, LanguagePrimitives.ConvertNumeric, ConversionRank.NumericImplicit);
                 CacheConversion<object>(typeofDouble, typeofFloat, LanguagePrimitives.ConvertNumeric, ConversionRank.NumericExplicit);
