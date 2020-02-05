@@ -2886,10 +2886,20 @@ namespace System.Management.Automation
         {
             try
             {
-                result = Convert.ChangeType(
-                    Parser.ScanNumber(strToConvert, resultType, shouldTryCoercion: false),
-                    resultType,
-                    System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
+                object number = Parser.ScanNumber(strToConvert, resultType, shouldTryCoercion: false);
+                if (number is BigInteger bigint)
+                {
+                    if (resultType == typeof(BigInteger))
+                    {
+                        result = number;
+                        return true;
+                    }
+                    else
+                    {
+                        number = bigint.ToString(NumberFormatInfo.InvariantInfo);
+                    }
+                }
+                result = Convert.ChangeType(number, resultType, NumberFormatInfo.InvariantInfo);
                 return true;
             }
             catch (Exception)
