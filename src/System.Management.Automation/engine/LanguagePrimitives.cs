@@ -2909,20 +2909,11 @@ namespace System.Management.Automation
         {
             var strToConvert = valueToConvert as string;
             Diagnostics.Assert(strToConvert != null, "Value to convert must be a string");
-            Diagnostics.Assert(
-                IsNumeric(GetTypeCode(resultType)) || resultType == typeof(BigInteger),
-                "Result type must be numeric");
+            Diagnostics.Assert(IsNumeric(GetTypeCode(resultType)), "Result type must be numeric");
 
             if (strToConvert.Length == 0)
             {
                 typeConversion.WriteLine("Returning numeric zero.");
-
-                // BigInteger is not IConvertible and will throw from ChangeType.
-                if (resultType == typeof(BigInteger))
-                {
-                    return new BigInteger(0);
-                }
-
                 // This is not wrapped in a try/catch because it can't fail.
                 return System.Convert.ChangeType(0, resultType, CultureInfo.InvariantCulture);
             }
@@ -3057,6 +3048,79 @@ namespace System.Management.Automation
                 throw new PSInvalidCastException("InvalidCastFromStringToDoubleOrSingle", e,
                     ExtendedTypeSystem.InvalidCastExceptionWithInnerException,
                     strToConvert, resultType.ToString(), e.Message);
+            }
+        }
+
+        private static object ConvertStringToBigInteger(object valueToConvert,
+                                                        Type resultType,
+                                                        bool recursion,
+                                                        PSObject originalValueToConvert,
+                                                        IFormatProvider formatProvider,
+                                                        TypeTable backupTable)
+        {
+            Diagnostics.Assert(valueToConvert is string, "Value to convert must be a string");
+            var strToConvert = valueToConvert as string;
+
+            if (strToConvert.Length == 0)
+            {
+                typeConversion.WriteLine("Returning numeric zero.");
+                return BigInteger.Zero;
+            }
+
+            typeConversion.WriteLine("Converting to BigInteger.");
+            FormatException saved_ex;
+            try
+            {
+                // First try BigInteger.Parse, this preserves the precision of arbitrarily-big integers.
+                return BigInteger.Parse(strToConvert, NumberFormatInfo.InvariantInfo);
+            }
+            catch (FormatException e)
+            {
+                saved_ex = e;
+            }
+            object number = null;
+            try
+            {
+                number = Parser.ScanNumber(strToConvert, resultType, shouldTryCoercion: false);
+            }
+            catch (Exception) { }
+            switch (number)
+            {
+                // If ScanNumber succeeded, it's one of the following types.
+                case BigInteger n:
+                    return n;
+                case Int32 n:
+                    return new BigInteger(n);
+                case UInt32 n:
+                    return new BigInteger(n);
+                case Int64 n:
+                    return new BigInteger(n);
+                case UInt64 n:
+                    return new BigInteger(n);
+                case Decimal n:
+                    return new BigInteger(n);
+                case Double n:
+                    return new BigInteger(n);
+                // Handle the remaining integer types by converting through Int32.
+                default:
+                    return new BigInteger((Int32)Convert.ChangeType(number, typeof(Int32)));
+
+                // If ScanNumber failed, continue below
+                case null:
+                    break;
+            }
+            typeConversion.WriteLine("Exception converting to BigInteger: \"{0}\". Converting to BigInteger passing through double.", saved_ex.Message);
+            try
+            {
+                return new BigInteger((double)Convert.ChangeType(
+                    valueToConvert, typeof(double), NumberFormatInfo.InvariantInfo));
+            }
+            catch (Exception e)
+            {
+                typeConversion.WriteLine("Exception converting to BigInteger through double: \"{0}\".", e.Message);
+                throw new PSInvalidCastException("InvalidCastFromStringToBigInteger", saved_ex,
+                    ExtendedTypeSystem.InvalidCastExceptionWithInnerException,
+                    strToConvert, resultType.ToString(), saved_ex.Message);
             }
         }
 
@@ -4177,7 +4241,7 @@ namespace System.Management.Automation
             // Handle BigInteger first, as it is not IConvertible
             if (resultType == typeof(BigInteger))
             {
-                return new BigInteger(0);
+                return BigInteger.Zero;
             }
 
             // If the destination type is numeric, convert 0 to resultType
@@ -4420,8 +4484,7 @@ namespace System.Management.Automation
             typeof(Int16), typeof(Int32), typeof(Int64),
             typeof(UInt16), typeof(UInt32), typeof(UInt64),
             typeof(sbyte), typeof(byte),
-            typeof(Single), typeof(double), typeof(decimal),
-            typeof(System.Numerics.BigInteger)
+            typeof(Single), typeof(double), typeof(decimal)
         };
 
         private static Type[] s_integerTypes = new Type[] {
@@ -4526,7 +4589,7 @@ namespace System.Management.Automation
                     }
                 }
 
-                CacheConversion<object>(typeofString, typeof(BigInteger), ConvertStringToInteger, ConversionRank.NumericString);
+                CacheConversion<object>(typeofString, typeof(BigInteger), ConvertStringToBigInteger, ConversionRank.NumericString);
 
                 CacheConversion<object>(typeofFloat, typeofDouble, LanguagePrimitives.ConvertNumeric, ConversionRank.NumericImplicit);
                 CacheConversion<object>(typeofDouble, typeofFloat, LanguagePrimitives.ConvertNumeric, ConversionRank.NumericExplicit);
